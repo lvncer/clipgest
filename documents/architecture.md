@@ -100,15 +100,16 @@
 
 ```mermaid
 flowchart LR
-  Client["Client\n(ブラウザ / Next.js Web アプリ)"]
-  Ext["Browser Extension\n(content script / background)"]
-  API["Go API Server\n(Gin)"]
-  DB["Supabase\n(Postgres)"]
+  Client["Client (Browser / Next.js Web)"]
+  Ext["Browser Extension (content script / background)"]
+  API["Go API Server (Gin)"]
+  DB["Supabase (Postgres)"]
 
   Client <--> Ext
   Ext -->|POST /api/links| API
-  Client -->|HTTP (GET /api/links, /digests/...)| API
-  API -->|SQL (links, digests ...)| DB
+  Client -->|GET /api/links| API
+  Client -->|GET /digests/...| API
+  API -->|SQL| DB
   DB --> API
 ```
 
