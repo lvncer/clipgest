@@ -72,32 +72,39 @@ extension/
 └── icons/                 # アイコン (要作成)
 ```
 
-### アイコンの作成
+### アイコンの生成
 
-`icons/create-icons.html` をブラウザで開いて、表示されるキャンバスを右クリックして PNG として保存してください：
+Lucide アイコンから PNG アイコンを自動生成できます：
 
-- `icon16.png` (16x16)
-- `icon48.png` (48x48)
-- `icon128.png` (128x128)
+```bash
+# デフォルト（link アイコン）
+bun run generate-icons
 
-保存したら、`manifest.json` にアイコンを追加：
-
-```json
-{
-  "icons": {
-    "16": "icons/icon16.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
-  },
-  "action": {
-    "default_icon": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png"
-    },
-    "default_title": "QuickLinks"
-  }
-}
+# 別のアイコンを使用
+bun run generate-icons bookmark
+bun run generate-icons bookmark-plus
+bun run generate-icons save
 ```
+
+利用可能なアイコン例：
+- `link` (デフォルト)
+- `bookmark`
+- `bookmark-plus`
+- `save`
+- `link-2`
+- `book-open`
+- `zap`
+- `sparkles`
+
+その他のアイコンは [Lucide Icons](https://lucide.dev/icons/) から選択できます。
+アイコン名は kebab-case（例: `bookmark-plus`）で指定してください。
+
+生成されるファイル：
+- `icons/icon16.png` (16x16)
+- `icons/icon48.png` (48x48)
+- `icons/icon128.png` (128x128)
+
+アイコンは紫のグラデーション背景に白いアイコンが表示されます。
 
 ## 使い方
 
