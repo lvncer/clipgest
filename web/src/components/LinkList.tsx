@@ -52,22 +52,25 @@ export default function LinkList() {
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-2">
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-card p-6 h-[300px] flex flex-col"
+            className="rounded-xl border border-border bg-card p-0 h-[200px] flex flex-col overflow-hidden"
           >
-            <div className="flex justify-between mb-4">
-              <Skeleton className="h-4 w-24" />
-              <Skeleton className="h-4 w-4" />
-            </div>
-            <Skeleton className="h-6 w-full mb-2" />
-            <Skeleton className="h-32 w-full mb-4 rounded-md" />{" "}
-            {/* Image placeholder */}
-            <div className="flex justify-between items-center mt-auto">
-              <Skeleton className="h-4 w-32" />
-              <Skeleton className="h-8 w-8 rounded-full" />
+            <div className="flex flex-col md:flex-row h-full">
+              <Skeleton className="w-full md:w-[280px] h-48 md:h-full shrink-0" />
+              <div className="flex flex-col">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+                <Skeleton className="h-20 w-full mb-auto" />ï
+                <div className="flex justify-between items-center">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-8 w-8 rounded-full" />
+                </div>
+              </div>
             </div>
           </div>
         ))}
@@ -98,9 +101,11 @@ export default function LinkList() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="flex flex-col gap-2">
       {links.map((link) => (
-        <LinkCard key={link.id} link={link} />
+        <div key={link.id} className="h-auto">
+          <LinkCard link={link} />
+        </div>
       ))}
     </div>
   );

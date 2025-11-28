@@ -10,7 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
-import { ExternalLink, Globe, Calendar, ImageIcon } from "lucide-react";
+import { ExternalLink, Globe, Calendar, ImageIcon, Clock } from "lucide-react";
 import Link from "next/link";
 import useSWR from "swr";
 
@@ -51,11 +51,14 @@ export default function LinkCard({ link }: { link: LinkItem }) {
   const displayDesc = ogData?.description || link.description;
   const displayTitle = ogData?.title || link.title || "No Title";
 
+  // 日付の表示ロジック
+  const displayDate = link.saved_at;
+
   return (
-    <Card className="group hover:shadow-md transition-all duration-300 hover:border-primary/50 overflow-hidden flex flex-col h-full bg-card/80 backdrop-blur-sm">
-      <div className="flex flex-col md:flex-row h-full">
+    <Card className="group hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full bg-card/80 backdrop-blur-sm">
+      <div className="flex flex-col md:flex-row h-full px-6">
         {/* 左側: OGP Image (16:9) */}
-        <div className="relative w-full md:w-[280px] shrink-0 bg-muted border-b md:border-b-0 md:border-r border-border/50">
+        <div className="relative w-full md:w-[280px] shrink-0">
           <div className="aspect-video w-full h-full relative">
             {isLoading ? (
               <Skeleton className="w-full h-full absolute inset-0" />
@@ -63,7 +66,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
               <img
                 src={displayImage}
                 alt={displayTitle}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 absolute inset-0"
+                className="w-full h-full object-cover transition-transform duration-500 absolute inset-0 rounded-lg"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
                   (
@@ -84,10 +87,10 @@ export default function LinkCard({ link }: { link: LinkItem }) {
         </div>
 
         {/* 右側: コンテンツ */}
-        <div className="flex flex-col flex-grow min-w-0">
-          <CardHeader className="pb-2 pt-4 px-4 md:px-5">
+        <div className="flex flex-col min-w-0 gap-2 mt-2">
+          <CardHeader className="gap-3">
             <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground mb-1">
+              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <Globe className="w-3 h-3" />
                 <span className="truncate max-w-[150px]">{link.domain}</span>
               </div>
@@ -104,16 +107,16 @@ export default function LinkCard({ link }: { link: LinkItem }) {
             </CardTitle>
           </CardHeader>
 
-          <CardContent className="flex-grow pb-2 px-4 md:px-5">
+          <CardContent>
             {/* Description */}
             {isLoading ? (
-              <div className="space-y-2 mb-3">
+              <div className="space-y-2">
                 <Skeleton className="h-3 w-full" />
                 <Skeleton className="h-3 w-2/3" />
               </div>
             ) : (
               displayDesc && (
-                <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                <p className="text-sm text-muted-foreground line-clamp-2">
                   {displayDesc}
                 </p>
               )
@@ -121,32 +124,31 @@ export default function LinkCard({ link }: { link: LinkItem }) {
 
             {/* User Note */}
             {link.note && (
-              <div className="bg-secondary/50 p-2.5 rounded-md text-xs text-secondary-foreground/90 italic border border-secondary mt-1">
+              <div className="bg-secondary/50 p-2.5 rounded-md text-xs text-secondary-foreground/90 italic">
                 "{link.note}"
               </div>
             )}
           </CardContent>
-
-          <CardFooter className="pt-2 pb-4 px-4 md:px-5 text-xs text-muted-foreground flex justify-between items-center border-t border-border/50 mt-auto bg-muted/20 py-3">
-            <div className="flex items-center gap-1.5" title={link.saved_at}>
-              <Calendar className="w-3 h-3" />
-              {formatDistanceToNow(new Date(link.saved_at), {
-                addSuffix: true,
-                locale: ja,
-              })}
-            </div>
-            <Link
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:bg-primary/10 rounded-full text-primary transition-colors p-2"
-              title="開く"
-            >
-              <ExternalLink className="w-4 h-4" />
-            </Link>
-          </CardFooter>
         </div>
       </div>
+      <CardFooter className="text-xs text-muted-foreground flex justify-between items-center">
+        <div className="flex items-center gap-1.5" title={`保存日: ${displayDate}`}>
+          <Clock className="w-3 h-3" />
+          {formatDistanceToNow(new Date(displayDate), {
+            addSuffix: true,
+            locale: ja,
+          })}
+        </div>
+        <Link
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:bg-primary/10 rounded-full text-primary transition-colors p-2"
+          title="開く"
+        >
+          <ExternalLink className="w-4 h-4" />
+        </Link>
+      </CardFooter>
     </Card>
   );
 }

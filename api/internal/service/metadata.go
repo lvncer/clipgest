@@ -12,9 +12,10 @@ type Metadata struct {
 	Title       string
 	Description string
 	Image       string
+	PublishedAt *time.Time
 }
 
-// FetchMetadata scrapes the URL to find OGP title, description, and image.
+// FetchMetadata scrapes the URL to find OGP title, description, image, and date.
 func FetchMetadata(targetURL string) (*Metadata, error) {
 	client := &http.Client{
 		Timeout: 10 * time.Second,
@@ -66,6 +67,39 @@ func FetchMetadata(targetURL string) (*Metadata, error) {
 
 	// Image
 	meta.Image = getContent("og:image")
+
+	// Published Date
+	// Try various meta tags for date
+	dateStr := getContent("article:published_time")
+	if dateStr == "" {
+		dateStr = getContent("article:modified_time")
+	}
+	if dateStr == "" {
+		dateStr = getContent("og:updated_time")
+	}
+	if dateStr == "" {
+		dateStr = getNameContent("date")
+	}
+	if dateStr == "" {
+		dateStr = getNameContent("pubdate")
+	}
+	if dateStr == "" {
+		// JSON-LD or other formats could be parsed here in the future
+		// For now, try simple time tag
+		dateStr = doc.Find("time[datetime]").AttrOr("datetime", "")
+	}
+
+	if dateStr != "" {
+		// Try parsing various date formats
+		// ISO 8601 / RFC 3339
+		if t, err := time.Parse(time.RFC3339, dateStr); err == nil {
+			meta.PublishedAt = &t
+		} else if t, err := time.Parse("2006-01-02T15:04:05", dateStr); err == nil { // No timezone
+			meta.PublishedAt = &t
+		} else if t, err := time.Parse("2006-01-02", dateStr); err == nil { // Date only
+			meta.PublishedAt = &t
+		}
+	}
 
 	return meta, nil
 }
