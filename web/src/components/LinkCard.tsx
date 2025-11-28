@@ -25,12 +25,14 @@ interface LinkItem {
   note: string;
   user_identifier: string;
   saved_at: string;
+  published_at?: string; // 記事の公開日（あれば）
 }
 
 interface OgData {
   title: string;
   description: string;
   image: string;
+  date?: string;
 }
 
 const ogFetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -52,10 +54,12 @@ export default function LinkCard({ link }: { link: LinkItem }) {
   const displayTitle = ogData?.title || link.title || "No Title";
 
   // 日付の表示ロジック
-  const displayDate = link.saved_at;
+  // リアルタイム取得した日付 > DBの公開日 > DBの保存日 の優先順位
+  const displayDate = ogData?.date || link.published_at || link.saved_at;
+  const isPublished = !!(ogData?.date || link.published_at);
 
   return (
-    <Card className="group hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col h-full bg-card/80 backdrop-blur-sm">
+    <Card className="group hover:shadow-md transition-all duration-300 hover:border-primary/50 overflow-hidden flex flex-col h-full bg-card/80 backdrop-blur-sm">
       <div className="flex flex-col md:flex-row h-full px-6">
         {/* 左側: OGP Image (16:9) */}
         <div className="relative w-full md:w-[280px] shrink-0">
@@ -87,8 +91,8 @@ export default function LinkCard({ link }: { link: LinkItem }) {
         </div>
 
         {/* 右側: コンテンツ */}
-        <div className="flex flex-col min-w-0 gap-2 mt-2">
-          <CardHeader className="gap-3">
+        <div className="flex flex-col min-w-0">
+          <CardHeader>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <Globe className="w-3 h-3" />
@@ -124,7 +128,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
 
             {/* User Note */}
             {link.note && (
-              <div className="bg-secondary/50 p-2.5 rounded-md text-xs text-secondary-foreground/90 italic">
+              <div className="bg-secondary/50 p-2.5 rounded-md text-xs text-secondary-foreground/90 italic border border-secondary mt-1">
                 "{link.note}"
               </div>
             )}
@@ -132,12 +136,22 @@ export default function LinkCard({ link }: { link: LinkItem }) {
         </div>
       </div>
       <CardFooter className="text-xs text-muted-foreground flex justify-between items-center">
-        <div className="flex items-center gap-1.5" title={`保存日: ${displayDate}`}>
-          <Clock className="w-3 h-3" />
+        <div
+          className="flex items-center gap-1.5"
+          title={
+            isPublished ? `公開日: ${displayDate}` : `保存日: ${displayDate}`
+          }
+        >
+          {isPublished ? (
+            <Calendar className="w-3 h-3" />
+          ) : (
+            <Clock className="w-3 h-3" />
+          )}
           {formatDistanceToNow(new Date(displayDate), {
             addSuffix: true,
             locale: ja,
           })}
+          {isPublished && <span className="ml-1 opacity-70">(公開)</span>}
         </div>
         <Link
           href={link.url}
