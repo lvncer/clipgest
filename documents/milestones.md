@@ -53,6 +53,30 @@
     - 将来的な認証・認可やビジネスロジックの追加に備える
   - UI は最小限で OK
     - URL / タイトル / ドメイン / 保存日時 をリスト表示
+  - OGP 情報の自動取得
+    - リンク保存時にタイトル、Description、OG Image を自動取得
+  - useSWR によるキャッシュと自動更新
+    - クライアントサイドでのデータ取得とリアルタイム更新
+
+## M3.1: Clerk 認証への完全移行
+
+- **目的**: API キー方式から Clerk 認証に移行し、セキュアでスケーラブルな認証基盤を構築する。
+- **やること**
+  - **拡張機能側**
+    - Clerk の認証トークンを取得する機能を追加
+    - `Authorization: Bearer <token>` ヘッダーで API リクエストを送信
+    - `X-QuickLink-Secret` ヘッダーを廃止
+  - **Go API 側**
+    - Clerk の JWT トークンを検証するミドルウェアを実装
+    - トークンから `user_id` を取得し、DB に保存
+    - `user_identifier` を正式な `user_id` に置き換え
+    - `SHARED_SECRET` による認証を廃止
+  - **Web アプリ側**
+    - Clerk の認証状態を確認
+    - 認証済みユーザーのみアクセス可能
+    - Next.js API Route で Clerk トークンを検証してから Go API に転送
+  - **データ移行**
+    - 既存の `user_identifier` を Clerk の `user_id` にマッピング（必要に応じて）
 
 ## M3.5: 早期デプロイ（プライベート本番）
 

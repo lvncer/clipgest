@@ -35,7 +35,8 @@
 
 ### API エンドポイント
 
-- `POST /api/links` … リンクを保存（`X-QuickLink-Secret` ヘッダ必須）
+- `POST /api/links` … リンクを保存（`X-QuickLink-Secret` ヘッダ必須、M3.1 で Clerk 認証に移行予定）
+- `GET /api/links` … リンク一覧取得（`X-QuickLink-Secret` ヘッダ必須、M3.1 で Clerk 認証に移行予定）
 
 ### API テスト
 
@@ -49,7 +50,22 @@
 
 ### Web アプリ（Next.js）
 
-（未実装、M3 以降で追加予定）
+1. `web/.env.local` を作成（`.env.local.example` を参考）
+
+2. 環境変数を設定:
+   - `API_BASE_URL`: Go API サーバーの URL（例: `http://localhost:8080`）
+   - `SHARED_SECRET`: API 認証用の共有シークレット（`api/.env` の `SHARED_SECRET` と同じ値）
+
+3. ローカルで実行:
+
+   ```bash
+   cd web
+   bun run dev
+   ```
+
+4. ブラウザで `http://localhost:3000` にアクセス
+
+**注意**: 現在は `SHARED_SECRET` による認証を使用していますが、M3.1 で Clerk 認証に移行予定です。
 
 ### ブラウザ拡張
 
@@ -78,6 +94,15 @@
    - 拡張機能のオプションページで API Base URL と Shared Secret を設定
 
 詳細は [`extension/README.md`](extension/README.md) を参照。
+
+## 認証について
+
+現在は `SHARED_SECRET` による API キー認証を使用していますが、**M3.1 で Clerk 認証に完全移行予定**です。
+
+- **現状（M3）**: `X-QuickLink-Secret` ヘッダーによる認証
+- **将来（M3.1）**: Clerk の JWT トークンによる認証
+
+詳細は [`documents/milestones.md`](documents/milestones.md) の M3.1 を参照してください。
 
 ## ライセンス
 
