@@ -1,5 +1,6 @@
 import { saveLink } from "./api";
-import { getConfig, ensureUserIdentifier } from "./storage";
+import { getConfig } from "./storage";
+import { isAuthenticated, getAuthState, login, logout } from "./auth";
 
 // Context menu ID
 const CONTEXT_MENU_ID = "quicklinks-save-link";
@@ -24,7 +25,18 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   try {
-    const userIdentifier = await ensureUserIdentifier();
+    // Check authentication
+    if (!(await isAuthenticated())) {
+      if (tab?.id) {
+        chrome.tabs.sendMessage(tab.id, {
+          type: "QUICKLINKS_TOAST",
+          message: "Please log in first from the extension options",
+          toastType: "error",
+        });
+      }
+      return;
+    }
+
     const pageUrl = tab?.url || info.pageUrl || "";
 
     // Get link text from selection or use URL
@@ -34,7 +46,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       url: linkUrl,
       title: linkText,
       page: pageUrl,
-      user_identifier: userIdentifier,
     });
 
     // Notify content script to show toast
@@ -71,6 +82,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     getConfig().then(sendResponse);
     return true;
   }
+
+  if (message.type === "CHECK_AUTH") {
+    getAuthState().then(sendResponse);
+    return true;
+  }
+
+  if (message.type === "LOGIN") {
+    login()
+      .then((state) => sendResponse({ success: true, state }))
+      .catch((error) =>
+        sendResponse({ success: false, error: error.message })
+      );
+    return true;
+  }
+
+  if (message.type === "LOGOUT") {
+    logout()
+      .then(() => sendResponse({ success: true }))
+      .catch((error) =>
+        sendResponse({ success: false, error: error.message })
+      );
+    return true;
+  }
 });
 
 async function handleSaveLinkMessage(
@@ -78,14 +112,19 @@ async function handleSaveLinkMessage(
   _sender: chrome.runtime.MessageSender
 ): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
-    const userIdentifier = await ensureUserIdentifier();
+    // Check authentication
+    if (!(await isAuthenticated())) {
+      return {
+        success: false,
+        error: "Not authenticated. Please log in from the options page.",
+      };
+    }
 
     const result = await saveLink({
       url: message.url,
       title: message.title,
       page: message.page,
       note: message.note,
-      user_identifier: userIdentifier,
     });
 
     return { success: true, id: result.id };
