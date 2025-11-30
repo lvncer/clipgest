@@ -133,6 +133,9 @@ export async function login(): Promise<AuthState> {
     config.clerkFrontendApiUrl
   }/v1/client/sign_in?redirect_url=${encodeURIComponent(redirectUrl)}`;
 
+  console.log("[QuickLinks] redirectUrl:", redirectUrl);
+  console.log("[QuickLinks] authUrl:", authUrl);
+
   try {
     // Launch the auth flow
     const responseUrl = await chrome.identity.launchWebAuthFlow({
