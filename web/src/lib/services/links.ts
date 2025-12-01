@@ -1,21 +1,7 @@
-// 型定義
-export interface Link {
-  id: string;
-  url: string;
-  title: string;
-  domain: string;
-  page_url: string;
-  note: string;
-  user_identifier: string;
-  saved_at: string; // APIからはISO文字列で返ってくる
-}
-
-export interface GetLinksResponse {
-  links: Link[];
-}
+import type { GetLinksResponse, Link } from "@/types/links";
 
 /**
- * APIからリンク一覧を取得する (Server Component用)
+ * APIからリンク一覧を取得する (Server Component用サービス)
  */
 export async function getLinks(limit: number = 50): Promise<Link[]> {
   const apiBaseUrl = process.env.API_BASE_URL;
@@ -41,7 +27,6 @@ export async function getLinks(limit: number = 50): Promise<Link[]> {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      // ISR: 60秒キャッシュ (または cache: 'no-store' で毎回取得)
       next: { revalidate: 60 },
     });
 
