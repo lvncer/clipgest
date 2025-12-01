@@ -4,6 +4,7 @@ FROM golang:1.22 AS builder
 WORKDIR /app
 
 # Go modules を先にコピーして依存解決
+ENV GOTOOLCHAIN=auto
 COPY api/go.mod api/go.sum ./
 RUN go mod download
 
