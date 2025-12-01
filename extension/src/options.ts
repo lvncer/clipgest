@@ -86,7 +86,7 @@ async function handleLogin(): Promise<void> {
   const clerkUrl = clerkFrontendApiUrlInput.value.trim();
 
   if (!clerkUrl) {
-    showAuthStatus("Please enter Clerk Frontend API URL first", "error");
+    showAuthStatus("Please enter Web App URL first", "error");
     return;
   }
 
@@ -99,17 +99,19 @@ async function handleLogin(): Promise<void> {
   try {
     const authState = await login();
     console.log("[QuickLinks] Login result:", authState);
-    
+
     // Verify the auth state was saved correctly
     const verifyState = await getAuthState();
     console.log("[QuickLinks] Verified auth state:", verifyState);
-    
+
     if (!verifyState.isAuthenticated || !verifyState.token) {
-      throw new Error("Login succeeded but token was not saved correctly. Please try again.");
+      throw new Error(
+        "Login succeeded but token was not saved correctly. Please try again."
+      );
     }
-    
+
     showAuthStatus("Login successful! 🎉", "success");
-    
+
     // Force UI update with a small delay to ensure storage is synced
     setTimeout(async () => {
       await updateAuthUI();
@@ -117,7 +119,9 @@ async function handleLogin(): Promise<void> {
   } catch (error) {
     console.error("[QuickLinks] Login error:", error);
     showAuthStatus(
-      `Login failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      `Login failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       "error"
     );
     // Update UI to show logged out state
@@ -141,7 +145,9 @@ async function handleLogout(): Promise<void> {
     await updateAuthUI();
   } catch (error) {
     showAuthStatus(
-      `Logout failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      `Logout failed: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
       "error"
     );
   } finally {

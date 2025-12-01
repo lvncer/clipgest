@@ -119,19 +119,19 @@ export async function login(): Promise<AuthState> {
 
   if (!config.clerkFrontendApiUrl) {
     throw new Error(
-      "Clerk Frontend API URL not configured. Please set it in the options page."
+      "Web app URL not configured. Please set it in the options page."
     );
   }
 
   // Get the redirect URL for the extension
   const redirectUrl = chrome.identity.getRedirectURL();
 
-  // Use Clerk's sign-in page with redirect
-  // The Web app should be configured to redirect back to this URL with the JWT
-  // Format: https://[frontend-api]/v1/client/sign_in?redirect_url=[redirect-url]
-  const authUrl = `${
-    config.clerkFrontendApiUrl
-  }/v1/client/sign_in?redirect_url=${encodeURIComponent(redirectUrl)}`;
+  // Use Web app's extension auth start endpoint
+  // The Web app will handle Clerk sign-in and redirect back to this URL with the JWT
+  const baseUrl = config.clerkFrontendApiUrl.replace(/\/$/, "");
+  const authUrl = `${baseUrl}/extension-auth/start?redirect_uri=${encodeURIComponent(
+    redirectUrl
+  )}`;
 
   console.log("[QuickLinks] redirectUrl:", redirectUrl);
   console.log("[QuickLinks] authUrl:", authUrl);
