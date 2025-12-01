@@ -4,7 +4,6 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
-  "/api/og(.*)", // OG API can be public for preview generation
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

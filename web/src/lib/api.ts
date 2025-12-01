@@ -19,18 +19,26 @@ export interface GetLinksResponse {
  */
 export async function getLinks(limit: number = 50): Promise<Link[]> {
   const apiBaseUrl = process.env.API_BASE_URL;
-  const sharedSecret = process.env.SHARED_SECRET;
 
-  if (!apiBaseUrl || !sharedSecret) {
-    console.error("API_BASE_URL or SHARED_SECRET is not set");
+  if (!apiBaseUrl) {
+    console.error("API_BASE_URL is not set");
     return [];
   }
 
   try {
+    const { auth } = await import("@clerk/nextjs/server");
+    const { getToken } = await auth();
+    const token = await getToken();
+
+    if (!token) {
+      console.error("No auth token found when calling getLinks");
+      return [];
+    }
+
     const res = await fetch(`${apiBaseUrl}/api/links?limit=${limit}`, {
       method: "GET",
       headers: {
-        "X-QuickLink-Secret": sharedSecret,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
       // ISR: 60秒キャッシュ (または cache: 'no-store' で毎回取得)
