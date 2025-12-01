@@ -5,7 +5,6 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/og(.*)", // OG API can be public for preview generation
-  "/extension-auth(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, request) => {

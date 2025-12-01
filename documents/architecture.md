@@ -5,11 +5,14 @@
   - 気になった Web ページの URL を「ブラウザ拡張から一瞬で保存」して、あとから Web ダッシュボードで見返したり、将来は週次・月次ダイジェストにまとめられるようにする。
   - サーバーサイドは Go（Gin）、フロントは Next.js、データは Supabase/Postgres に集約する。
 
-- **主要コンポーネント**
-  - **ブラウザ拡張**（Chrome Manifest V3）
-  - **API サーバー**（Go + Gin）
-  - **Web アプリ**（Next.js）
-  - **データベース**（Supabase / Postgres）
+## 主要コンポーネント
+
+| コンポーネント | ディレクトリ | 技術                |
+| -------------- | ------------ | ------------------- |
+| ブラウザ拡張   | /extension   | Chrome Manifest V3  |
+| API サーバー   | /api         | Go + Gin            |
+| Web アプリ     | /web         | Next.js             |
+| データベース   |              | Supabase / Postgres |
 
 ## コンポーネント構成
 
@@ -24,8 +27,7 @@
     - `note`: 将来用に、選択テキスト等を載せられる余地
   - 拡張はローカルに保存している Clerk の JWT を使って、`fetch("{API_BASE}/api/links")` に JSON を POST。
   - HTTP ヘッダ `Authorization: Bearer <JWT>` を付与して認可を通す（共有シークレット方式は廃止）。
-  - Clerk の JWT は主に QuickLinks Web アプリへのログイン時に同期される。Web 側が `window.postMessage` でトークンをブラウザに投げ、拡張の content script → background がそれを受け取って `chrome.storage.sync` に保存する（A 案）。
-  - 開発・トラブルシュート用に、options ページからの手動ログインフロー（Chrome Identity API (`chrome.identity.launchWebAuthFlow`) を使って Web 経由でサインインし、拡張に JWT を返すフロー）も併存させる想定。
+  - Clerk の JWT は QuickLinks Web アプリへのログイン時に同期される。Web 側が `window.postMessage` でトークンをブラウザに投げ、拡張の content script → background がそれを受け取って `chrome.storage.sync` に保存する。
 
 - **API サーバー（api, Go + Gin）**
 

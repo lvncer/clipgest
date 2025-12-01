@@ -1,5 +1,5 @@
 import { getConfig, saveConfig } from "./storage";
-import { getAuthState, login, logout } from "./auth";
+import { getAuthState } from "./auth";
 
 // DOM Elements
 const apiBaseUrlInput = document.getElementById(
@@ -79,82 +79,6 @@ async function handleSave(): Promise<void> {
   }
 }
 
-/**
- * Handle login
- */
-async function handleLogin(): Promise<void> {
-  const clerkUrl = clerkFrontendApiUrlInput.value.trim();
-
-  if (!clerkUrl) {
-    showAuthStatus("Please enter Web App URL first", "error");
-    return;
-  }
-
-  // Save the Clerk URL first
-  await saveConfig({ clerkFrontendApiUrl: clerkUrl });
-
-  loginBtn.disabled = true;
-  loginBtn.textContent = "⏳ ログイン中...";
-
-  try {
-    const authState = await login();
-    console.log("[QuickLinks] Login result:", authState);
-
-    // Verify the auth state was saved correctly
-    const verifyState = await getAuthState();
-    console.log("[QuickLinks] Verified auth state:", verifyState);
-
-    if (!verifyState.isAuthenticated || !verifyState.token) {
-      throw new Error(
-        "Login succeeded but token was not saved correctly. Please try again."
-      );
-    }
-
-    showAuthStatus("Login successful! 🎉", "success");
-
-    // Force UI update with a small delay to ensure storage is synced
-    setTimeout(async () => {
-      await updateAuthUI();
-    }, 100);
-  } catch (error) {
-    console.error("[QuickLinks] Login error:", error);
-    showAuthStatus(
-      `Login failed: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
-      "error"
-    );
-    // Update UI to show logged out state
-    await updateAuthUI();
-  } finally {
-    loginBtn.disabled = false;
-    loginBtn.textContent = "🔑 ログイン";
-  }
-}
-
-/**
- * Handle logout
- */
-async function handleLogout(): Promise<void> {
-  logoutBtn.disabled = true;
-  logoutBtn.textContent = "⏳ ログアウト中...";
-
-  try {
-    await logout();
-    showAuthStatus("Logged out successfully", "success");
-    await updateAuthUI();
-  } catch (error) {
-    showAuthStatus(
-      `Logout failed: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
-      "error"
-    );
-  } finally {
-    logoutBtn.disabled = false;
-    logoutBtn.textContent = "🚪 ログアウト";
-  }
-}
 
 /**
  * Show status message
@@ -184,8 +108,6 @@ function showAuthStatus(message: string, type: "success" | "error"): void {
 
 // Event listeners
 saveBtn.addEventListener("click", handleSave);
-loginBtn.addEventListener("click", handleLogin);
-logoutBtn.addEventListener("click", handleLogout);
 
 // Load config on page load
 loadConfig();

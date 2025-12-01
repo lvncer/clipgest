@@ -1,6 +1,6 @@
 import { saveLink } from "./api";
 import { getConfig, saveConfig } from "./storage";
-import { isAuthenticated, getAuthState, login, logout, parseJwt } from "./auth";
+import { isAuthenticated, getAuthState, parseJwt } from "./auth";
 
 // Context menu ID
 const CONTEXT_MENU_ID = "quicklinks-save-link";
@@ -130,20 +130,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.type === "CHECK_AUTH") {
     getAuthState().then(sendResponse);
-    return true;
-  }
-
-  if (message.type === "LOGIN") {
-    login()
-      .then((state) => sendResponse({ success: true, state }))
-      .catch((error) => sendResponse({ success: false, error: error.message }));
-    return true;
-  }
-
-  if (message.type === "LOGOUT") {
-    logout()
-      .then(() => sendResponse({ success: true }))
-      .catch((error) => sendResponse({ success: false, error: error.message }));
     return true;
   }
 

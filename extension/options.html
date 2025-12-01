@@ -304,24 +304,13 @@
               placeholder="http://localhost:3000"
             />
             <p class="help-text">
-              QuickLinks Web アプリの URL（例: http://localhost:3000）
+              QuickLinks Web アプリの URL（例: http://localhost:3000）。<br />
+              Web アプリでログインすると、拡張機能には自動的にログイン状態が同期されます。
             </p>
           </div>
-
-          <div class="button-group">
-            <button type="button" class="btn-success" id="loginBtn">
-              🔑 ログイン
-            </button>
-          </div>
         </div>
 
-        <div id="loggedInSection" class="hidden">
-          <div class="button-group">
-            <button type="button" class="btn-danger" id="logoutBtn">
-              🚪 ログアウト
-            </button>
-          </div>
-        </div>
+        <div id="loggedInSection" class="hidden"></div>
 
         <div class="status" id="authStatusMessage"></div>
       </div>
