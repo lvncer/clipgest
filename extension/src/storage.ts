@@ -1,6 +1,5 @@
 export interface QuickLinksConfig {
   apiBaseUrl: string;
-  // Clerk authentication
   clerkFrontendApiUrl: string;
   clerkToken: string;
   clerkUserId: string;
@@ -15,9 +14,6 @@ const DEFAULT_CONFIG: QuickLinksConfig = {
   clerkTokenExpiresAt: 0,
 };
 
-/**
- * Get the current configuration from Chrome storage
- */
 export async function getConfig(): Promise<QuickLinksConfig> {
   const result = await chrome.storage.sync.get(DEFAULT_CONFIG);
   return {
@@ -31,18 +27,12 @@ export async function getConfig(): Promise<QuickLinksConfig> {
   };
 }
 
-/**
- * Save configuration to Chrome storage
- */
 export async function saveConfig(
   config: Partial<QuickLinksConfig>
 ): Promise<void> {
   await chrome.storage.sync.set(config);
 }
 
-/**
- * Clear authentication data (logout)
- */
 export async function clearAuthData(): Promise<void> {
   await chrome.storage.sync.remove([
     "clerkToken",
@@ -51,9 +41,6 @@ export async function clearAuthData(): Promise<void> {
   ]);
 }
 
-/**
- * Check if Clerk is configured
- */
 export async function isClerkConfigured(): Promise<boolean> {
   const config = await getConfig();
   return !!config.clerkFrontendApiUrl;

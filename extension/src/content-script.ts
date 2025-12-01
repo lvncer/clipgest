@@ -1,15 +1,12 @@
 import { showToast } from "./ui/toast";
 
-// Long-press configuration
-const LONG_PRESS_DURATION = 500; // ms
-const SAVE_BUTTON_TIMEOUT = 5000; // Auto-hide save button after 5 seconds
+const LONG_PRESS_DURATION = 500;
+const SAVE_BUTTON_TIMEOUT = 5000;
 
-// State
 let longPressTimer: ReturnType<typeof setTimeout> | null = null;
 let currentSaveButton: HTMLElement | null = null;
 let targetLink: HTMLAnchorElement | null = null;
 
-// Styles for the Save button
 const SAVE_BUTTON_STYLES = `
   .quicklinks-save-btn {
     position: fixed;
@@ -61,16 +58,11 @@ function injectStyles(): void {
   styleInjected = true;
 }
 
-/**
- * Find the closest anchor element from a touch/click target
- */
 function findLinkElement(target: EventTarget | null): HTMLAnchorElement | null {
   if (!(target instanceof Element)) return null;
 
-  // Check if target or its parent is a link
   const link = target.closest("a[href]");
   if (link instanceof HTMLAnchorElement && link.href) {
-    // Filter out javascript: and # links
     if (link.href.startsWith("javascript:") || link.href === "#") {
       return null;
     }
@@ -80,9 +72,6 @@ function findLinkElement(target: EventTarget | null): HTMLAnchorElement | null {
   return null;
 }
 
-/**
- * Show the Save button near the specified position
- */
 function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
   injectStyles();
   removeSaveButton();
@@ -92,7 +81,6 @@ function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
   button.textContent = "💾 Save";
   button.setAttribute("data-quicklinks", "save-button");
 
-  // Position the button near the long-press location
   const buttonWidth = 100;
   const buttonHeight = 40;
   const padding = 10;
@@ -100,7 +88,6 @@ function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
   let left = x - buttonWidth / 2;
   let top = y - buttonHeight - padding;
 
-  // Keep button within viewport
   left = Math.max(
     padding,
     Math.min(left, window.innerWidth - buttonWidth - padding)
@@ -117,15 +104,12 @@ function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
   currentSaveButton = button;
   targetLink = link;
 
-  // Animate in
   requestAnimationFrame(() => {
     button.classList.add("visible");
   });
 
-  // Add click handler
   button.addEventListener("click", handleSaveClick);
 
-  // Auto-hide after timeout
   setTimeout(() => {
     if (currentSaveButton === button) {
       removeSaveButton();
@@ -133,9 +117,6 @@ function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
   }, SAVE_BUTTON_TIMEOUT);
 }
 
-/**
- * Remove the Save button
- */
 function removeSaveButton(): void {
   if (currentSaveButton) {
     currentSaveButton.remove();
@@ -144,9 +125,6 @@ function removeSaveButton(): void {
   targetLink = null;
 }
 
-/**
- * Handle Save button click
- */
 async function handleSaveClick(event: Event): Promise<void> {
   event.preventDefault();
   event.stopPropagation();
@@ -156,12 +134,10 @@ async function handleSaveClick(event: Event): Promise<void> {
   const button = currentSaveButton;
   const link = targetLink;
 
-  // Show saving state
   button.classList.add("saving");
   button.textContent = "⏳ Saving...";
 
   try {
-    // Send message to background script
     const response = await chrome.runtime.sendMessage({
       type: "SAVE_LINK",
       url: link.href,
@@ -182,9 +158,6 @@ async function handleSaveClick(event: Event): Promise<void> {
   }
 }
 
-/**
- * Start long-press detection
- */
 function startLongPress(x: number, y: number, link: HTMLAnchorElement): void {
   cancelLongPress();
 
@@ -193,9 +166,6 @@ function startLongPress(x: number, y: number, link: HTMLAnchorElement): void {
   }, LONG_PRESS_DURATION);
 }
 
-/**
- * Cancel long-press detection
- */
 function cancelLongPress(): void {
   if (longPressTimer) {
     clearTimeout(longPressTimer);
@@ -203,7 +173,6 @@ function cancelLongPress(): void {
   }
 }
 
-// Touch event handlers (mobile)
 function handleTouchStart(event: TouchEvent): void {
   const touch = event.touches[0];
   if (!touch) return;
@@ -222,9 +191,7 @@ function handleTouchMove(): void {
   cancelLongPress();
 }
 
-// Mouse event handlers (for testing on desktop)
 function handleMouseDown(event: MouseEvent): void {
-  // Only on left click
   if (event.button !== 0) return;
 
   const link = findLinkElement(event.target);
@@ -241,7 +208,6 @@ function handleMouseMove(): void {
   cancelLongPress();
 }
 
-// Click outside to close Save button
 function handleDocumentClick(event: Event): void {
   const target = event.target as Element;
   if (target?.getAttribute?.("data-quicklinks") !== "save-button") {
@@ -249,7 +215,6 @@ function handleDocumentClick(event: Event): void {
   }
 }
 
-// Listen for toast messages from background script
 chrome.runtime.onMessage.addListener((message) => {
   console.log("[QuickLinks] runtime.onMessage", message);
   if (message.type === "QUICKLINKS_TOAST") {
@@ -257,20 +222,16 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-// Initialize
 function init(): void {
-  // Touch events (mobile)
   document.addEventListener("touchstart", handleTouchStart, { passive: true });
   document.addEventListener("touchend", handleTouchEnd, { passive: true });
   document.addEventListener("touchmove", handleTouchMove, { passive: true });
   document.addEventListener("touchcancel", handleTouchEnd, { passive: true });
 
-  // Mouse events (desktop long-press for testing)
   document.addEventListener("mousedown", handleMouseDown);
   document.addEventListener("mouseup", handleMouseUp);
   document.addEventListener("mousemove", handleMouseMove);
 
-  // Close save button on click outside
   document.addEventListener("click", handleDocumentClick);
 
   console.log("[QuickLinks] Content script loaded");

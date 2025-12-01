@@ -18,9 +18,6 @@ export interface ApiError {
   detail?: string;
 }
 
-/**
- * Get authorization headers for API requests
- */
 async function getAuthHeaders(): Promise<Record<string, string>> {
   const token = await getToken();
 
@@ -34,15 +31,11 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   };
 }
 
-/**
- * Save a link to the QuickLinks API
- */
 export async function saveLink(
   request: SaveLinkRequest
 ): Promise<SaveLinkResponse> {
   const config = await getConfig();
 
-  // Check if authenticated
   if (!(await isAuthenticated())) {
     throw new Error("Not authenticated. Please log in from the options page.");
   }
@@ -56,7 +49,9 @@ export async function saveLink(
   });
 
   if (response.status === 401) {
-    throw new Error("Session expired. Please log in again from the options page.");
+    throw new Error(
+      "Session expired. Please log in again from the options page."
+    );
   }
 
   if (!response.ok) {

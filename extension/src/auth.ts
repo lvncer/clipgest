@@ -7,9 +7,6 @@ export interface AuthState {
   expiresAt: number | null;
 }
 
-/**
- * Get current authentication state
- */
 export async function getAuthState(): Promise<AuthState> {
   const config = await getConfig();
 
@@ -31,7 +28,6 @@ export async function getAuthState(): Promise<AuthState> {
     };
   }
 
-  // Validate token format (should be a JWT with 3 parts)
   const tokenParts = config.clerkToken.split(".");
   if (tokenParts.length !== 3) {
     console.warn(
@@ -46,10 +42,8 @@ export async function getAuthState(): Promise<AuthState> {
     };
   }
 
-  // Check if token is expired
   if (config.clerkTokenExpiresAt && Date.now() > config.clerkTokenExpiresAt) {
     console.log("[QuickLinks] getAuthState - Token expired, clearing auth");
-    // Token expired, clear auth data
     await clearAuthData();
     return {
       isAuthenticated: false,
@@ -59,7 +53,6 @@ export async function getAuthState(): Promise<AuthState> {
     };
   }
 
-  // Verify token payload is valid
   const tokenPayload = parseJwt(config.clerkToken);
   const userId = tokenPayload?.sub as string | undefined;
   if (!tokenPayload || !userId) {
@@ -89,25 +82,16 @@ export async function getAuthState(): Promise<AuthState> {
   };
 }
 
-/**
- * Check if user is authenticated
- */
 export async function isAuthenticated(): Promise<boolean> {
   const state = await getAuthState();
   return state.isAuthenticated;
 }
 
-/**
- * Get the current auth token
- */
 export async function getToken(): Promise<string | null> {
   const state = await getAuthState();
   return state.token;
 }
 
-/**
- * Parse a JWT token without validation (for client-side use only)
- */
 export function parseJwt(token: string): Record<string, unknown> | null {
   try {
     const base64Url = token.split(".")[1];
@@ -126,5 +110,3 @@ export function parseJwt(token: string): Record<string, unknown> | null {
     return null;
   }
 }
-
-// Note: token refresh / login flows are handled by the Web app.

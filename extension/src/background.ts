@@ -2,10 +2,8 @@ import { saveLink } from "./api";
 import { getConfig, saveConfig } from "./storage";
 import { isAuthenticated, getAuthState, parseJwt } from "./auth";
 
-// Context menu ID
 const CONTEXT_MENU_ID = "quicklinks-save-link";
 
-// Create context menu on extension install/update
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
@@ -14,7 +12,6 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-// Handle context menu click (PC right-click)
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   console.log("[QuickLinks] contextMenus.onClicked", {
     info,
@@ -30,7 +27,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   try {
-    // Check authentication
     if (!(await isAuthenticated())) {
       console.log("[QuickLinks] Context menu clicked but not authenticated");
       if (tab?.id) {
@@ -57,7 +53,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     const pageUrl = tab?.url || info.pageUrl || "";
 
-    // Get link text from selection or use URL
     const linkText = info.selectionText || new URL(linkUrl).hostname;
 
     await saveLink({
@@ -66,7 +61,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       page: pageUrl,
     });
 
-    // Notify content script to show toast
     if (tab?.id) {
       console.log("[QuickLinks] Sending success toast to tab", tab.id);
       chrome.tabs.sendMessage(
@@ -112,14 +106,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-// Handle messages from content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "SAVE_LINK") {
     handleSaveLinkMessage(message, sender)
       .then((result) => sendResponse(result))
       .catch((error) => sendResponse({ success: false, error: error.message }));
 
-    // Return true to indicate async response
     return true;
   }
 
@@ -146,7 +138,6 @@ async function handleSaveLinkMessage(
   _sender: chrome.runtime.MessageSender
 ): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
-    // Check authentication
     if (!(await isAuthenticated())) {
       return {
         success: false,

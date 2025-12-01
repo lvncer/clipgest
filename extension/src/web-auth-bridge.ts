@@ -1,9 +1,4 @@
-// Content script 専用: QuickLinks Web ↔ 拡張の認証同期ブリッジ
-// QuickLinks Web からの window.postMessage を受け取り、拡張の background に転送する。
-
-// メッセージイベントのハンドラ
 window.addEventListener("message", (event: MessageEvent) => {
-  // 同一ウィンドウからのメッセージのみ対象
   if (event.source !== window) {
     return;
   }
@@ -18,8 +13,6 @@ window.addEventListener("message", (event: MessageEvent) => {
     return;
   }
 
-  // origin チェック: QuickLinks Web 上でのみ動く前提なので、
-  // 実際の origin が window.location.origin と一致しているかを確認する。
   if (event.origin !== window.location.origin) {
     console.warn(
       "[QuickLinks] Ignoring auth message from unexpected origin:",

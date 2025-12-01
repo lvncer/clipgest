@@ -1,7 +1,3 @@
-/**
- * Toast notification for QuickLinks extension
- */
-
 const TOAST_STYLES = `
   .quicklinks-toast {
     position: fixed;
@@ -60,7 +56,6 @@ export function showToast(
 ): void {
   injectStyles();
 
-  // Remove existing toast if any
   if (currentToast) {
     currentToast.remove();
   }
@@ -71,12 +66,9 @@ export function showToast(
   document.body.appendChild(toast);
   currentToast = toast;
 
-  // Trigger animation
   requestAnimationFrame(() => {
     toast.classList.add("visible");
   });
-
-  // Auto-hide after duration
   setTimeout(() => {
     toast.classList.remove("visible");
     setTimeout(() => {
