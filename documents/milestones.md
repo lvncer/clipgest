@@ -110,6 +110,18 @@
     - 簡単なデプロイ手順を `README` や `documents/20251120_memo.md` にメモしておく
     - この段階ではドメインや CI/CD はまだ最低限で OK（手動デプロイでよい）
 
+## M3.6: 拡張 & Web の設定フロー改善
+
+- **目的**: 「API URL の設定」と「Clerk ログイン」を Web ベースで一体化し、拡張のセットアップをシンプルにする。
+- **やること**
+  - Web 側
+    - `ExtensionAuthSync` から拡張へ送るメッセージに `apiBaseUrl` も含める
+      - 例: `process.env.NEXT_PUBLIC_API_BASE` を含めて postMessage → background が storage に保存
+  - 拡張側
+    - `background.ts` の `handleSaveAuthMessage` で受け取った `apiBaseUrl` を `saveConfig` で同期
+    - `storage.ts` の `DEFAULT_CONFIG.apiBaseUrl` を本番 API URL に寄せる（開発時のみオプションで上書き）
+    - `options.ts` で API URL 入力時に `http(s)://` が無ければ自動補完するなど、軽いバリデーションを追加
+
 ## M4: 検索・フィルタリング & タグ（使い勝手の向上）
 
 - **目的**: 溜まってきたリンクを「あとから探せる」状態にする。
