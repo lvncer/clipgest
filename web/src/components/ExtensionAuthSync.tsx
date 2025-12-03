@@ -17,7 +17,7 @@ export function ExtensionAuthSync() {
 
     const sync = async () => {
       try {
-        const token = await getToken();
+        const token = await getToken({ template: "quicklinks-extension" });
         if (!token || !userId || cancelled) {
           return;
         }
