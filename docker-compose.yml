@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    env_file:
+      - ./api/.env
+    ports:
+      - "8080:8080"
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    env_file:
+      - ./web/.env.local
+    environment:
+      # コンテナ間通信用に API_BASE_URL を api サービスに向ける
+      API_BASE_URL: http://api:8080
+      NEXT_PUBLIC_API_BASE: http://api:8080
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api

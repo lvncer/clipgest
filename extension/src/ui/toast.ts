@@ -52,7 +52,7 @@ export type ToastType = "success" | "error" | "info";
 export function showToast(
   message: string,
   type: ToastType = "success",
-  duration = 3000
+  duration = 3000,
 ): void {
   injectStyles();
 

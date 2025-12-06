@@ -42,10 +42,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             if (err) {
               console.warn(
                 "[QuickLinks] Failed to send not-authenticated toast:",
-                err.message
+                err.message,
               );
             }
-          }
+          },
         );
       }
       return;
@@ -75,10 +75,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           if (err) {
             console.warn(
               "[QuickLinks] Failed to send success toast:",
-              err.message
+              err.message,
             );
           }
-        }
+        },
       );
     }
   } catch (error) {
@@ -97,10 +97,10 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           if (err) {
             console.warn(
               "[QuickLinks] Failed to send error toast:",
-              err.message
+              err.message,
             );
           }
-        }
+        },
       );
     }
   }
@@ -135,7 +135,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 async function handleSaveLinkMessage(
   message: { url: string; title: string; page: string; note?: string },
-  _sender: chrome.runtime.MessageSender
+  _sender: chrome.runtime.MessageSender,
 ): Promise<{ success: boolean; id?: string; error?: string }> {
   try {
     if (!(await isAuthenticated())) {

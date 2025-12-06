@@ -39,7 +39,7 @@ export default function LinkList() {
     {
       refreshInterval: 30000, // 30秒ごとに自動更新
       revalidateOnFocus: true,
-    }
+    },
   );
 
   if (error) {

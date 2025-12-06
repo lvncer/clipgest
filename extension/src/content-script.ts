@@ -90,11 +90,11 @@ function showSaveButton(x: number, y: number, link: HTMLAnchorElement): void {
 
   left = Math.max(
     padding,
-    Math.min(left, window.innerWidth - buttonWidth - padding)
+    Math.min(left, window.innerWidth - buttonWidth - padding),
   );
   top = Math.max(
     padding,
-    Math.min(top, window.innerHeight - buttonHeight - padding)
+    Math.min(top, window.innerHeight - buttonHeight - padding),
   );
 
   button.style.left = `${left}px`;

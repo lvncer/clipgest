@@ -28,7 +28,7 @@ export async function getConfig(): Promise<QuickLinksConfig> {
 }
 
 export async function saveConfig(
-  config: Partial<QuickLinksConfig>
+  config: Partial<QuickLinksConfig>,
 ): Promise<void> {
   await chrome.storage.sync.set(config);
 }

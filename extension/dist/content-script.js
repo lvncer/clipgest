@@ -148,11 +148,11 @@ function showSaveButton(x, y, link) {
   let top = y - buttonHeight - padding;
   left = Math.max(
     padding,
-    Math.min(left, window.innerWidth - buttonWidth - padding)
+    Math.min(left, window.innerWidth - buttonWidth - padding),
   );
   top = Math.max(
     padding,
-    Math.min(top, window.innerHeight - buttonHeight - padding)
+    Math.min(top, window.innerHeight - buttonHeight - padding),
   );
   button.style.left = `${left}px`;
   button.style.top = `${top}px`;
@@ -189,7 +189,7 @@ async function handleSaveClick(event) {
       type: "SAVE_LINK",
       url: link.href,
       title: link.textContent?.trim() || link.href,
-      page: window.location.href
+      page: window.location.href,
     });
     if (response.success) {
       showToast("Link saved! \u2728", "success");

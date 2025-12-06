@@ -1,0 +1,13 @@
+web/node_modules
+web/.next
+web/.turbo
+
+api/bin
+api/dist
+api/.env
+
+.git
+.gitignore
+node_modules
+Dockerfile
+*.log
