@@ -2,10 +2,10 @@ import { getConfig, saveConfig } from "./storage";
 import { getAuthState } from "./auth";
 
 const apiBaseUrlInput = document.getElementById(
-  "apiBaseUrl"
+  "apiBaseUrl",
 ) as HTMLInputElement;
 const clerkFrontendApiUrlInput = document.getElementById(
-  "clerkFrontendApiUrl"
+  "clerkFrontendApiUrl",
 ) as HTMLInputElement;
 const saveBtn = document.getElementById("saveBtn") as HTMLButtonElement;
 const statusDiv = document.getElementById("status") as HTMLDivElement;
@@ -13,10 +13,10 @@ const authIcon = document.getElementById("authIcon") as HTMLDivElement;
 const authTitle = document.getElementById("authTitle") as HTMLElement;
 const authSubtitle = document.getElementById("authSubtitle") as HTMLElement;
 const loggedOutSection = document.getElementById(
-  "loggedOutSection"
+  "loggedOutSection",
 ) as HTMLDivElement;
 const loggedInSection = document.getElementById(
-  "loggedInSection"
+  "loggedInSection",
 ) as HTMLDivElement;
 
 async function loadConfig(): Promise<void> {

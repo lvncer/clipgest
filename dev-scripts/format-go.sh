@@ -1,13 +1,9 @@
 #!/bin/bash
 
-# Go コードを一括フォーマットするスクリプト
+# Go コードを一括フォーマットするシンプルなスクリプト
 set -e
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-API_DIR="$PROJECT_ROOT/api"
-
-cd "$API_DIR"
+cd "$(dirname "$0")/../api"
 
 echo "Running go fmt ./..."
 go fmt ./...

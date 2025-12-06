@@ -54,7 +54,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
     {
       revalidateOnFocus: false,
       dedupingInterval: 60000, // 1分間は再取得しない
-    }
+    },
   );
 
   // DBの値または取得したOGPデータを使用

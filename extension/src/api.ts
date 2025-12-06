@@ -32,7 +32,7 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
 }
 
 export async function saveLink(
-  request: SaveLinkRequest
+  request: SaveLinkRequest,
 ): Promise<SaveLinkResponse> {
   const config = await getConfig();
 
@@ -62,12 +62,12 @@ export async function saveLink(
   console.log(
     "[QuickLinks] saveLink: response",
     response.status,
-    response.statusText
+    response.statusText,
   );
 
   if (response.status === 401) {
     throw new Error(
-      "Session expired. Please log in again from the options page."
+      "Session expired. Please log in again from the options page.",
     );
   }
 
@@ -94,7 +94,7 @@ export async function saveLink(
 
     throw new Error(
       (errorData && errorData.error) ||
-        `HTTP ${response.status} ${response.statusText}`
+        `HTTP ${response.status} ${response.statusText}`,
     );
   }
 

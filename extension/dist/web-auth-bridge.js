@@ -13,7 +13,7 @@ window.addEventListener("message", (event) => {
   if (event.origin !== window.location.origin) {
     console.warn(
       "[QuickLinks] Ignoring auth message from unexpected origin:",
-      event.origin
+      event.origin,
     );
     return;
   }
@@ -30,22 +30,22 @@ window.addEventListener("message", (event) => {
         type: "QUICKLINKS_SAVE_AUTH",
         token,
         userId,
-        apiBaseUrl
+        apiBaseUrl,
       },
       () => {
         const err = chrome.runtime.lastError;
         if (err) {
           console.warn(
             "[QuickLinks] Failed to send auth to background:",
-            err.message
+            err.message,
           );
         }
-      }
+      },
     );
   } catch (error) {
     console.warn(
       "[QuickLinks] Failed to send auth to background (exception):",
-      error
+      error,
     );
   }
 });

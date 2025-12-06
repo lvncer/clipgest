@@ -31,7 +31,7 @@ export async function getAuthState(): Promise<AuthState> {
   const tokenParts = config.clerkToken.split(".");
   if (tokenParts.length !== 3) {
     console.warn(
-      "[QuickLinks] getAuthState - Invalid token format, clearing auth"
+      "[QuickLinks] getAuthState - Invalid token format, clearing auth",
     );
     await clearAuthData();
     return {
@@ -61,7 +61,7 @@ export async function getAuthState(): Promise<AuthState> {
   const userId = tokenPayload?.sub as string | undefined;
   if (!tokenPayload || !userId) {
     console.warn(
-      "[QuickLinks] getAuthState - Invalid token payload, clearing auth"
+      "[QuickLinks] getAuthState - Invalid token payload, clearing auth",
     );
     await clearAuthData();
     return {
@@ -106,7 +106,7 @@ export function parseJwt(token: string): Record<string, unknown> | null {
       atob(base64)
         .split("")
         .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
+        .join(""),
     );
 
     return JSON.parse(jsonPayload);
