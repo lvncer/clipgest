@@ -7,6 +7,8 @@
 - **PC**: リンクを右クリックして「Save link to QuickLinks」を選択します
 - 保存したリンクは QuickLinks API に送信され、データベースに保存されます
 
+  ![extension-image](/public/images/extension.jpeg)
+
 ## セットアップ
 
 ### 1. リポジトリの取得

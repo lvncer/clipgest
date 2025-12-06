@@ -12,6 +12,9 @@ quicklinks/
 │
 ├── .husky/                         # pre-commit で lint-staged を呼ぶフック
 │
+├── public/
+│   └── images/
+│
 ├── documents/
 │
 ├── infra/
