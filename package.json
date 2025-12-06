@@ -14,10 +14,10 @@
   },
   "lint-staged": {
     "web/**/*.{ts,tsx,js,jsx,json,md}": [
-      "bun x biome format --write"
+      "biome format --write"
     ],
     "extension/**/*.{ts,tsx,js,jsx,json,md}": [
-      "bun x biome format --write"
+      "biome format --write"
     ],
     "**/*.go": [
       "gofmt -w"
