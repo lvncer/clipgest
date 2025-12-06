@@ -156,6 +156,26 @@
   - CI に ent のコード生成確認（`go generate ./...` 相当）と `go fmt ./...` を追加
   - 開発手順メモ: `bun x go generate ./...`（または `go generate ./...`）→ `go test` で検証
 
+## M3.9: ルートページを紹介 LP 化し、アプリ領域を分離
+
+- **目的**: ルートを「価値が一目で伝わる紹介ページ」にしつつ、リンク一覧などのアプリ領域を分離して情報設計と導線を整理する。
+- **やること**
+  - **構成策定**: ヒーロー（価値訴求＋主要 CTA）、機能一覧、使い方（拡張インストール → Web で認証 → リンク保存 → Web で閲覧）、実際に使っている様子（スクショ/動画）、フッター（CTA/問い合わせ）というシンプル構成でワイヤーを切る。
+  - **トーン & UI 指針**: シンプルで余白のあるレイアウト＋強めのタイポとアクセントカラー。ヒーローは短いタグライン＋「リンク保存が秒で終わる」ビジュアル（ブラウザ拡張のモック）を置く。
+  - **ルーティング/ドメイン案の整理**
+    - **採用**: サブドメイン分離で進める。LP: `quicklinks-zeta.vercel.app` / アプリ: `app.quicklinks-zeta.vercel.app`。
+      - DNS: `app.quicklinks-zeta.vercel.app` を `cname.vercel-dns.com` へ CNAME。Vercel 側でドメイン割り当て。
+      - 環境変数: `NEXT_PUBLIC_SITE_ORIGIN`（LP）, `NEXT_PUBLIC_APP_ORIGIN`, `NEXT_PUBLIC_API_BASE`, API 側の `ALLOWED_ORIGINS` に両ドメインを登録。
+      - Clerk: Allowed Origins/Redirect に両ドメイン追加。OAuth callback も両方登録。
+      - ルーティング: LP は `src/app/page.tsx`、アプリは `src/app/links/page.tsx` などを `app.` サブドメインで出す。カノニカル URL をオリジンに合わせる。
+    - パス分離案: `quicklinks-zeta.vercel.app`（LP） / `quicklinks-zeta.vercel.app/links`（アプリ）…サブドメイン採用のため今回は検討のみ。
+    - SEO/Cookie/SameSite などの考慮は上記設定に含める。
+  - **リンク共有 URL 設計（確定）**: `/u/<username>/links` でパス式に統一（人間可読・SEO 重視）。旧クエリ形は 301 リダイレクトで寄せる。
+  - **実装タスク**: `web/` 側で LP 用ページ（例: `src/app/page.tsx` を LP に、既存一覧は `src/app/links/page.tsx` などへ）を作成し、ヒーロー/機能/使い方/デモ/CTA セクションを組む。モック用スクショ or 簡易動画を用意。
+  - **導線と計測**: LP の CTA からサインアップ/拡張インストール導線を配置。Clerk 認証や app 領域への遷移でデザインを崩さないよう共通ヘッダー/フッターを検討。主要 CTA にトラッキング（GA/Sentry 等）を付ける。
+  - **将来検討（コミュニティ）**: `quicklinks-zeta.vercel.app/community` で全体公開リンクの最近分を見せる案は後続マイルストーンで追加検討（M3.9 範囲外）。
+  - **デプロイ構成**: 同リポジトリ内で Next.js を 2 プロジェクトに分割して Vercel に 2 つ登録（LP: `/web`, アプリ: `/app`）。オリジン分離で CORS/Cookie/SameSite を明確化し、LP の SEO/マーケをルートドメインに集中させる。
+
 ## M4: 検索・フィルタリング & タグ（使い勝手の向上）
 
 - **目的**: 溜まってきたリンクを「あとから探せる」状態にする。
@@ -164,7 +184,8 @@
     - `GET /api/links` にクエリパラメータ（`from`, `to`, `domain`, `tag` など）を追加
     - Supabase/Postgres のインデックスを調整（`user_id`, `saved_at`, `domain` など）
   - Web 側
-    - `src/app/links/page.tsx` にフィルタ UI（期間 / ドメイン / タグ）を追加
+    - `src/app/links/page.tsx` にフィルタ UI（期間 / ドメイン / タグ）を追加し、日付期間などは URL クエリで表現（共有・再現性を高める）
+    - クエリフォーマット例: `?from=2025-11-01&to=2025-11-30&tag=dev`（ISO8601 日付）。複数タグにする場合は `tag=dev&tag=ai` などの複数指定を許容。
   - タグ機能の基礎
     - 最初は `links.tags (text[])` のみでよい
     - （必要になったら `tags` / `link_tags` テーブルに分離）
