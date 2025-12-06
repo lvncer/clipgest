@@ -134,6 +134,14 @@
     - トリガー: `pull_request`（main 向け）、`push`（main）
     - 依存インストールは `--frozen-lockfile` を必須
     - ざっくりした依存チェック（`pnpm audit` / `npm audit` 相当）を追加
+  - 共通フロントエンドツール（bun ベースでルートに集約）
+    - ルート `package.json` を bun 管理にして、`@biomejs/biome`, `husky`, `lint-staged` を devDependencies に追加
+    - `biome format --write` を `web/` と `extension/` の `*.{ts,tsx,js,jsx,json,md}` に適用
+    - Husky `pre-commit` で `lint-staged` を実行（コミット前フォーマット）
+    - lint-staged で Go も対象にするか: **方針案**として `gofmt -w` をステージ済みの Go ファイルに走らせる。プロジェクトの合意を取った上で有効化する。
+  - Go フォーマット
+    - CI で `go fmt ./...` を必須にする
+    - 手動実行用に `dev-scripts/format-go.sh`（中身は `go fmt ./...`）を追加しておく
   - Dependabot / 自動マージ
     - セキュリティ更新・patch/minor の依存アップデートは自動マージ
     - major 更新はレビュー必須

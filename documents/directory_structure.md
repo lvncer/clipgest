@@ -5,9 +5,12 @@
 ```sh
 quicklinks/
 ├── README.md
-├── package.json                    # ルート共通ツール用（lint, format など）
+├── package.json                    # ルート共通ツール（bun 管理: Biome / Husky / lint-staged など）
+├── biome.json                      # Biome 設定（web / extension 配下を対象に format）
 ├── turbo.json / nx.json            # （任意）モノレポツール設定
 ├── .gitignore
+│
+├── .husky/                         # pre-commit で lint-staged を呼ぶフック
 │
 ├── documents/
 │
@@ -107,6 +110,7 @@ quicklinks/
 ├── dev-scripts/
 │   ├── run-api-local.sh
 │   ├── run-web-local.sh
+│   ├── format-go.sh                # go fmt ./... を手動実行するスクリプト
 │   └── sync-supabase-schema.sh
 │
 └── .github/
