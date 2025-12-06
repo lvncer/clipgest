@@ -4,16 +4,14 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-ENV NODE_ENV=production
-
 # Install dependencies
 COPY web/package.json ./
-RUN npm install --omit=dev
+RUN npm install
 
 # Copy application source
 COPY web ./
 
-# Build Next.js app
+# Build Next.js app (Clerk keys are loaded from web/.env.local during build)
 RUN npm run build
 
 # Runtime stage
