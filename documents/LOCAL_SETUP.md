@@ -3,7 +3,18 @@
 ## 1. 環境変数の設定
 
 1. `api/.env` を作成（`.env.example` を参考）
+
+   | 環境変数         | 例                                     | 備考                      |
+   | ---------------- | -------------------------------------- | ------------------------- |
+   | DATABASE_URL     | `postgresql://:@.supabase.co:5432/...` | 必ず sesson pooler を選択 |
+   | CLERK_SECRET_KEY | `sk_test_...`                          |
+
 2. `web/.env.local` を作成（`.env.local.example` を参考）
+
+   | 環境変数                          | 例            |
+   | --------------------------------- | ------------- |
+   | NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY | `pk_test_...` |
+   | CLERK_SECRET_KEY                  | `sk_test_...` |
 
 ## 2. サーバの起動
 
