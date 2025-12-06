@@ -113,7 +113,40 @@ Ctrl+C を押すか、 `./dev-scripts/stop-all.sh`を実行してください。
 
 ※ 本番向けのイメージビルド手順やレジストリ連携は、デプロイ先のインフラに合わせて別途整備する。
 
----
+## docker compose で API + Web を同時起動
+
+ローカルで API (`api`) と Web (`web`) をコンテナとして同時に起動するための compose ファイルがあります。
+
+- ファイル: `docker-compose.yml`
+- 前提:
+  - `api/.env` が存在し、少なくとも以下が設定されていること
+    - `DATABASE_URL`
+    - `CLERK_SECRET_KEY`
+    - （必要に応じて `PORT`, `ENVIRONMENT`）
+  - `web/.env.local` が存在し、Clerk のキーが設定されていること
+    - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+    - `CLERK_SECRET_KEY`
+
+compose では、Web から API へはコンテナ名で通信します:
+
+- API サービス名: `api`
+- Web サービス名: `web`
+- Web コンテナ内の `API_BASE_URL` / `NEXT_PUBLIC_API_BASE` は `http://api:8080` に上書きされます
+
+### 起動方法
+
+```bash
+docker compose up --build
+```
+
+- 初回は `--build` を付けてイメージをビルド
+- 2 回目以降は `docker compose up` だけでも OK
+
+停止する場合:
+
+```bash
+docker compose down
+```
 
 ## 全コンポーネントのクリーン & ビルド
 
