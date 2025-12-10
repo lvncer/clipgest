@@ -1,6 +1,6 @@
 // src/storage.ts
 var DEFAULT_CONFIG = {
-  apiBaseUrl: "https://quicklinks-production-6429.up.railway.app",
+  apiBaseUrl: "https://quicklinks-hftb.onrender.com",
   clerkFrontendApiUrl: "",
   clerkToken: "",
   clerkUserId: "",
