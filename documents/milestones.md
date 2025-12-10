@@ -149,13 +149,13 @@
 
 ## M3.8: Go API の ORM 導入（ent）
 
-- **目的**: Go API のクエリを型安全にし、スキーマ定義とコード生成を一元化する。
+- **目的**: Go API のクエリを型安全にし、スキーマ定義とコード生成・マイグレーション管理を一元化する。
 - **やること**
-  - `api/` に ent を導入し、`ent/schema` で `links` などのスキーマを定義
-  - 既存の SQL 手書き部分（例: `handler/links.go`）を ent のクエリに置き換え
-  - 既存テーブルとの互換性を担保しつつ、マイグレーションは当面 `infra/migrations` で継続管理
-  - CI に ent のコード生成確認（`go generate ./...` 相当）と `go fmt ./...` を追加
-  - 開発手順メモ: `bun x go generate ./...`（または `go generate ./...`）→ `go test` で検証
+  - `api/` に ent を導入し、`ent/schema` で `links` テーブルのスキーマを定義する（まずは `links` のみ ent 化し、将来的に他テーブルも順次 ent に寄せていく）。
+  - `model.Link` は外部向け DTO として残しつつ、永続化層では ent のエンティティを利用するように `handler/links.go` / `service` 層をリファクタリングする。
+  - 既存の `infra/migrations/00x_*.sql` によって構築済みの本番 Supabase DB を baseline とみなし、現在の `links` スキーマと同等の初期マイグレーションを ent 側（`ent/migrate`）に定義する。
+  - 今後のスキーマ変更（例: `links.deleted_at` の追加や Index 追加）は ent のマイグレーションを唯一のソースオブトゥルースとして管理し、`infra/migrations` は参照用として残しつつ段階的に廃止する。
+  - CI に ent のコード生成確認（`go generate ./...` 相当）と `go fmt ./...` を追加し、本番 Supabase に対するマイグレーション適用は専用コマンドで手動実行する運用を整える（自動 migrate は行わない）。
 
 ## M3.9: ルートページを紹介 LP 化し、アプリ領域を分離
 
@@ -188,8 +188,8 @@
     - `src/app/links/page.tsx` にフィルタ UI（期間 / ドメイン / タグ）を追加し、日付期間などは URL クエリで表現（共有・再現性を高める）
     - クエリフォーマット例: `?from=2025-11-01&to=2025-11-30&tag=dev`（ISO8601 日付）。複数タグにする場合は `tag=dev&tag=ai` などの複数指定を許容。
   - タグ機能の基礎
-    - 最初は `links.tags (text[])` のみでよい
-    - （必要になったら `tags` / `link_tags` テーブルに分離）
+    - 既存の `links.tags (text[])` を `jsonb` カラムに移行し、Ent 側では `field.JSON` を使った JSON フィールド（例: `[]string`）として管理するマイグレーションを追加する。
+    - 将来的に必要になったら `tags` / `link_tags` テーブルに正規化して分離する。
 
 ## M4.5: Web UI でリンクの更新・削除（published_at / memo）
 
