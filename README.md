@@ -19,6 +19,7 @@
 | API ドキュメント   | [documents/api.md](documents/api.md)                                   |
 | ER 図              | [documents/er-diagram.md](documents/er-diagram.md)                     |
 | CI/CD ドキュメント | [documents/ci.md](documents/ci.md)                                     |
+| 変更履歴           | [CHANGELOG.md](CHANGELOG.md)                                           |
 
 ## 拡張機能について
 
