@@ -9,6 +9,13 @@ import {
   useTransform,
 } from "framer-motion";
 
+type ScrollOffset =
+  NonNullable<Parameters<typeof useScroll>[0]> extends {
+    offset?: infer T;
+  }
+    ? T
+    : never;
+
 type ScrollRevealProps = {
   children: React.ReactNode;
   className?: string;
@@ -34,7 +41,7 @@ type ScrollRevealProps = {
    * useScroll の offset を上書きしたい場合に指定
    * 例: ["start 90%", "start 55%"]
    */
-  offset?: unknown;
+  offset?: ScrollOffset;
 };
 
 export default function ScrollReveal({
@@ -49,15 +56,10 @@ export default function ScrollReveal({
   const reduced = useReducedMotion();
   const ref = React.useRef<HTMLDivElement | null>(null);
 
-  if (reduced) {
-    return <div className={className}>{children}</div>;
-  }
-
   const { scrollYProgress } = useScroll({
     target: ref,
-    // framer-motion の型定義差分を吸収するため、ここは as any で渡す
-    offset: (offset ?? ["start 85%", "start 35%"]) as any,
-  } as any);
+    offset: offset ?? (["start 85%", "start 35%"] as ScrollOffset),
+  });
 
   const start = Math.min(1, Math.max(0, range[0] + shift));
   const end = Math.min(1, Math.max(0, range[1] + shift));
@@ -71,6 +73,14 @@ export default function ScrollReveal({
 
   const opacity = useTransform(p, [start, safeEnd], [0, 1]);
   const translateY = useTransform(p, [start, safeEnd], [y, 0]);
+
+  if (reduced) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <motion.div

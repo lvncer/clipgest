@@ -10,6 +10,13 @@ import {
   type MotionValue,
 } from "framer-motion";
 
+type ScrollOffset =
+  NonNullable<Parameters<typeof useScroll>[0]> extends {
+    offset?: infer T;
+  }
+    ? T
+    : never;
+
 type ScrollStaggerProps = {
   children: React.ReactNode;
   className?: string;
@@ -30,7 +37,7 @@ type ScrollStaggerProps = {
    * useScroll の offset を上書きしたい場合に指定
    * 例: ["start 95%", "start 65%"]
    */
-  offset?: unknown;
+  offset?: ScrollOffset;
 };
 
 export function ScrollStagger({
@@ -45,14 +52,10 @@ export function ScrollStagger({
   const reduced = useReducedMotion();
   const ref = React.useRef<HTMLDivElement | null>(null);
 
-  if (reduced) {
-    return <div className={className}>{children}</div>;
-  }
-
   const { scrollYProgress } = useScroll({
     target: ref,
-    offset: (offset ?? ["start 85%", "start 35%"]) as any,
-  } as any);
+    offset: offset ?? (["start 85%", "start 35%"] as ScrollOffset),
+  });
 
   const p = useSpring(scrollYProgress, {
     stiffness: spring?.stiffness ?? 105,
@@ -61,6 +64,14 @@ export function ScrollStagger({
   });
 
   const childArray = React.Children.toArray(children);
+
+  if (reduced) {
+    return (
+      <div ref={ref} className={className}>
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className={className}>
