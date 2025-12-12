@@ -5,6 +5,12 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [Semantic Versioning](https://semver.org/lang/ja/) に準拠しています。
 
+## 0.3.9 - 2025-12-12
+
+- Added
+
+  - /about に LP を追加し、スクロール追従（進捗ベース）のアニメーションを導入（[#24](https://github.com/lvncer/quicklinks/pull/24)）
+
 ## 0.3.8.5 - 2025-12-10
 
 - Changed
