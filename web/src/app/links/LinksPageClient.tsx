@@ -4,7 +4,7 @@ import AppHeader from "@/components/layouts/AppHeader";
 import LinkList from "@/components/LinkList";
 import { Button } from "@/components/ui/button";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 function parseTagsInput(input: string): string[] {
   return Array.from(
@@ -45,17 +45,37 @@ export default function LinksPageClient() {
     };
   }, [searchParams]);
 
+  // Track previous active values to only update when they actually change
+  const prevActiveRef = useRef(active);
   const [fromInput, setFromInput] = useState(active.from);
   const [toInput, setToInput] = useState(active.to);
   const [domainInput, setDomainInput] = useState(active.domain);
   const [tagsInput, setTagsInput] = useState(active.tags.join(", "));
 
-  useEffect(() => {
-    setFromInput(active.from);
-    setToInput(active.to);
-    setDomainInput(active.domain);
-    setTagsInput(active.tags.join(", "));
-  }, [active.domain, active.from, active.tags, active.to]);
+  // Update inputs only when active values actually change (synchronize with URL search params)
+  // Note: This effect synchronizes form inputs with URL search params (external system).
+  // The setState calls are conditional and necessary for this synchronization.
+  useLayoutEffect(() => {
+    const prev = prevActiveRef.current;
+    // Only update if values actually changed to avoid unnecessary re-renders
+    if (prev.from !== active.from) {
+      // Synchronizing with external system (URL search params), setState is necessary
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFromInput(active.from);
+    }
+    if (prev.to !== active.to) {
+      setToInput(active.to);
+    }
+    if (prev.domain !== active.domain) {
+      setDomainInput(active.domain);
+    }
+    const activeTagsStr = active.tags.join(", ");
+    const prevTagsStr = prev.tags.join(", ");
+    if (prevTagsStr !== activeTagsStr) {
+      setTagsInput(activeTagsStr);
+    }
+    prevActiveRef.current = active;
+  }, [active]);
 
   const applyFilters = () => {
     const next = new URLSearchParams();
