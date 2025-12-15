@@ -7,11 +7,43 @@ import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
 import { LinksResponse } from "@/types/links";
 
-export default function LinkList() {
+type LinkListProps = {
+  limit?: number;
+  from?: string;
+  to?: string;
+  domain?: string;
+  tags?: string[];
+};
+
+export default function LinkList({
+  limit = 50,
+  from,
+  to,
+  domain,
+  tags,
+}: LinkListProps) {
   const { getToken } = useAuth();
   const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE;
 
-  const apiUrl = apiBaseUrl ? `${apiBaseUrl}/api/links?limit=50` : null;
+  const apiUrl = (() => {
+    if (!apiBaseUrl) return null;
+    const params = new URLSearchParams();
+    params.set("limit", String(limit));
+    if (from) params.set("from", from);
+    if (to) params.set("to", to);
+    if (domain) params.set("domain", domain);
+    if (tags && tags.length > 0) {
+      for (const t of tags) params.append("tag", t);
+    }
+    // Send client timezone so the API can interpret YYYY-MM-DD correctly.
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (tz) params.set("tz", tz);
+    } catch {
+      // noop
+    }
+    return `${apiBaseUrl}/api/links?${params.toString()}`;
+  })();
 
   const fetcher = async (url: string) => {
     const token = await getToken();
