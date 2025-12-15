@@ -1,7 +1,6 @@
 "use client";
 
-import AppHeader from "@/components/layouts/AppHeader";
-import LinkList from "@/components/LinkList";
+import LinkList from "@/components/links/LinkList";
 import LinksFilterPanel from "@/components/links/LinksFilterPanel";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
@@ -34,8 +33,7 @@ export default function LinksPageClient() {
   }, [searchParams]);
 
   return (
-    <main className="min-h-screen max-w-4xl mx-auto">
-      <AppHeader />
+    <>
       <LinksFilterPanel active={active} />
 
       <LinkList
@@ -45,6 +43,6 @@ export default function LinksPageClient() {
         domain={active.domain || undefined}
         tags={active.tags.length > 0 ? active.tags : undefined}
       />
-    </main>
+    </>
   );
 }

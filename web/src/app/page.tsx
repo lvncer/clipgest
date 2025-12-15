@@ -1,16 +1,14 @@
 import { Suspense } from "react";
-import LinksPageClient from "./LinksPageClient";
+import AppHeader from "@/components/layouts/AppHeader";
+import LinksPageClient from "@/components/links/LinksPageClient";
 
 export default function Home() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen max-w-4xl mx-auto py-12 text-muted-foreground">
-          Loading...
-        </div>
-      }
-    >
-      <LinksPageClient />
-    </Suspense>
+    <main className="min-h-screen max-w-4xl mx-auto">
+      <AppHeader />
+      <Suspense>
+        <LinksPageClient />
+      </Suspense>
+    </main>
   );
 }
