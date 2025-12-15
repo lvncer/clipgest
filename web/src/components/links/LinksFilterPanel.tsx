@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 export type LinksListActiveFilters = {
   from: string;
@@ -93,7 +94,7 @@ export default function LinksFilterPanel({
 
   return (
     <section className="mb-6 rounded-xl border border-border bg-card p-4">
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex items-center gap-2">
             <h2 className="text-sm font-semibold">フィルター</h2>
@@ -120,7 +121,11 @@ export default function LinksFilterPanel({
             size="sm"
             onClick={isOpen ? closePanel : openPanel}
           >
-            {isOpen ? "閉じる" : "開く"}
+            {isOpen ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </Button>
 
           {hasAnyActive && (
