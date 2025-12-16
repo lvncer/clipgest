@@ -2,7 +2,7 @@
 
 ## 目的
 
-気になった Web ページの URL を「ブラウザ拡張から一瞬で保存」して、あとから Web ダッシュボードで見返したり、将来は週次・月次ダイジェストにまとめられるようにする。
+気になった Web ページの URL を「ブラウザ拡張から一瞬で保存」して、あとから Web ダッシュボードで見返したり、将来的にはダイジェストにまとめられるようにする。
 
 ## 主要コンポーネント
 
@@ -51,7 +51,7 @@
 - 役割：
   - 保存されたリンクの一覧表示（ダッシュボード）。
   - 日付範囲 / ドメイン / タグなどによるフィルタ（段階的に追加）。
-  - 将来的には、週次・月次ダイジェストの閲覧や共有ページのレンダリングもここで担当。
+  - 将来的には、ダイジェストの閲覧や共有ページのレンダリングもここで担当（自動生成は最終版の範囲）。
 - データ取得方法：
   - クライアント（useSWR）からは `/api/links` と `/api/og` を叩く。
   - **useSWR によるキャッシュ**: クライアントサイドでデータをキャッシュし、30 秒ごとに自動更新。
@@ -198,27 +198,25 @@ Web-->>User: 別タブなどで元記事を表示
 
 ### 4. ダイジェスト生成フロー（将来拡張）
 
-- バックエンド側で cron / ジョブキューを使い、週次・月次で `links` を集計。
-- AI API にタイトル / メタデータ / 抜粋を渡して要約を生成。
-- 生成した Markdown/HTML を `digests` テーブルに保存。
-- Web アプリが `/digests/{public_slug}` などで公開用ページを表示し、URL 共有できるようにする。
+- **M5（手動）**: Web から手動で期間を指定してダイジェストを生成し、`digests` / `digest_items` に保存して一覧/公開ページで閲覧する。
+  - AI 要約は手動トリガに含めてOK（失敗時はテンプレにフォールバック）
+- **最終版（M8想定）**: 必要なら cron / ジョブキューで週次・月次の自動生成を導入し、生成完了をメール等で通知する。
 
 ```mermaid
 sequenceDiagram
-  participant Scheduler as Scheduler/Cron
-  participant Worker as DigestWorker
+  participant Web as Web App（手動）
   participant API as Go API Server
   participant DB as Supabase(Postgres)
   participant AI as AI API
 
-  Scheduler->>Worker: 週次 / 月次ダイジェスト生成ジョブをキック
-  Worker->>DB: 期間内の links をクエリ
-  DB-->>Worker: 対象リンク一覧
-  Worker->>AI: 要約用プロンプト + リンク情報
-  AI-->>Worker: 要約テキスト (Markdown/HTML)
-  Worker->>DB: INSERT INTO digests, digest_items
-  DB-->>Worker: 新しいダイジェスト ID / public_slug
-  Worker-->>API: （任意）通知やログを送信
+  Web->>API: POST /api/digests/generate（期間指定・手動実行）
+  API->>DB: 期間内の links をクエリ
+  DB-->>API: 対象リンク一覧
+  API->>AI: 要約用プロンプト + リンク情報（任意）
+  AI-->>API: 要約テキスト (Markdown/HTML)
+  API->>DB: INSERT INTO digests, digest_items
+  DB-->>API: 新しいダイジェスト ID / public_slug
+  API-->>Web: 生成結果（slug など）
 ```
 
 ## 開発・デプロイ構成
@@ -238,5 +236,5 @@ sequenceDiagram
 
 ## 今後の拡張の方向性（メモ）
 
-- OG 取得や本文スクレイピングをバックグラウンドジョブ化して、`links.metadata` を徐々にリッチにする。
-- `digests` を定期生成するジョブと、ダイジェスト閲覧ページ（共有 URL）を Next.js で実装する。
+- （最終版 / M8想定）OG 取得や本文スクレイピングをバックグラウンドジョブ化して、`links.metadata` を徐々にリッチにする。
+- （最終版 / M8想定）`digests` を定期生成するジョブと、ダイジェスト閲覧ページ（共有 URL）を Next.js で実装する。

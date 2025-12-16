@@ -2,6 +2,8 @@
 
 最終的に目指すモノレポ構成のイメージ。実際の実装時には細かいファイル名は変わる可能性があるが、レイヤー構造と責務の単位感を示す。
 
+> 補足: ここに出てくる `worker/` や cron 相当の自動化は **最終版（M8 想定）** の話。M5〜M6 では「Web から手動でダイジェスト生成（手動 AI 要約）」を前提に進める。
+
 ```sh
 quicklinks/
 ├── README.md
@@ -94,7 +96,7 @@ quicklinks/
 │       │   └── job.go
 │       ├── handler/
 │       │   ├── links.go            # POST /api/links, GET /api/links
-│       │   ├── digests.go          # 週次・月次ダイジェスト用 API
+│       │   ├── digests.go          # ダイジェスト用 API（最終版では週次・月次の自動生成も含む）
 │       │   └── health.go           # /health
 │       ├── service/
 │       │   ├── link_service.go     # ビジネスロジック（リンク登録など）
