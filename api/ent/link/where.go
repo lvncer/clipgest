@@ -105,11 +105,6 @@ func CreatedAt(v time.Time) predicate.Link {
 	return predicate.Link(sql.FieldEQ(FieldCreatedAt, v))
 }
 
-// PublishedAt applies equality check predicate on the "published_at" field. It's identical to PublishedAtEQ.
-func PublishedAt(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldEQ(FieldPublishedAt, v))
-}
-
 // UserIDEQ applies the EQ predicate on the "user_id" field.
 func UserIDEQ(v string) predicate.Link {
 	return predicate.Link(sql.FieldEQ(FieldUserID, v))
@@ -788,56 +783,6 @@ func CreatedAtLT(v time.Time) predicate.Link {
 // CreatedAtLTE applies the LTE predicate on the "created_at" field.
 func CreatedAtLTE(v time.Time) predicate.Link {
 	return predicate.Link(sql.FieldLTE(FieldCreatedAt, v))
-}
-
-// PublishedAtEQ applies the EQ predicate on the "published_at" field.
-func PublishedAtEQ(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldEQ(FieldPublishedAt, v))
-}
-
-// PublishedAtNEQ applies the NEQ predicate on the "published_at" field.
-func PublishedAtNEQ(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldNEQ(FieldPublishedAt, v))
-}
-
-// PublishedAtIn applies the In predicate on the "published_at" field.
-func PublishedAtIn(vs ...time.Time) predicate.Link {
-	return predicate.Link(sql.FieldIn(FieldPublishedAt, vs...))
-}
-
-// PublishedAtNotIn applies the NotIn predicate on the "published_at" field.
-func PublishedAtNotIn(vs ...time.Time) predicate.Link {
-	return predicate.Link(sql.FieldNotIn(FieldPublishedAt, vs...))
-}
-
-// PublishedAtGT applies the GT predicate on the "published_at" field.
-func PublishedAtGT(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldGT(FieldPublishedAt, v))
-}
-
-// PublishedAtGTE applies the GTE predicate on the "published_at" field.
-func PublishedAtGTE(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldGTE(FieldPublishedAt, v))
-}
-
-// PublishedAtLT applies the LT predicate on the "published_at" field.
-func PublishedAtLT(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldLT(FieldPublishedAt, v))
-}
-
-// PublishedAtLTE applies the LTE predicate on the "published_at" field.
-func PublishedAtLTE(v time.Time) predicate.Link {
-	return predicate.Link(sql.FieldLTE(FieldPublishedAt, v))
-}
-
-// PublishedAtIsNil applies the IsNil predicate on the "published_at" field.
-func PublishedAtIsNil() predicate.Link {
-	return predicate.Link(sql.FieldIsNull(FieldPublishedAt))
-}
-
-// PublishedAtNotNil applies the NotNil predicate on the "published_at" field.
-func PublishedAtNotNil() predicate.Link {
-	return predicate.Link(sql.FieldNotNull(FieldPublishedAt))
 }
 
 // And groups predicates with the AND operator between them.

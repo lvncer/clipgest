@@ -47,7 +47,6 @@ type LinkMutation struct {
 	metadata      *map[string]interface{}
 	saved_at      *time.Time
 	created_at    *time.Time
-	published_at  *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Link, error)
@@ -710,55 +709,6 @@ func (m *LinkMutation) ResetCreatedAt() {
 	m.created_at = nil
 }
 
-// SetPublishedAt sets the "published_at" field.
-func (m *LinkMutation) SetPublishedAt(t time.Time) {
-	m.published_at = &t
-}
-
-// PublishedAt returns the value of the "published_at" field in the mutation.
-func (m *LinkMutation) PublishedAt() (r time.Time, exists bool) {
-	v := m.published_at
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPublishedAt returns the old "published_at" field's value of the Link entity.
-// If the Link object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *LinkMutation) OldPublishedAt(ctx context.Context) (v *time.Time, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPublishedAt is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPublishedAt requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPublishedAt: %w", err)
-	}
-	return oldValue.PublishedAt, nil
-}
-
-// ClearPublishedAt clears the value of the "published_at" field.
-func (m *LinkMutation) ClearPublishedAt() {
-	m.published_at = nil
-	m.clearedFields[link.FieldPublishedAt] = struct{}{}
-}
-
-// PublishedAtCleared returns if the "published_at" field was cleared in this mutation.
-func (m *LinkMutation) PublishedAtCleared() bool {
-	_, ok := m.clearedFields[link.FieldPublishedAt]
-	return ok
-}
-
-// ResetPublishedAt resets all changes to the "published_at" field.
-func (m *LinkMutation) ResetPublishedAt() {
-	m.published_at = nil
-	delete(m.clearedFields, link.FieldPublishedAt)
-}
-
 // Where appends a list predicates to the LinkMutation builder.
 func (m *LinkMutation) Where(ps ...predicate.Link) {
 	m.predicates = append(m.predicates, ps...)
@@ -793,7 +743,7 @@ func (m *LinkMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *LinkMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 12)
 	if m.user_id != nil {
 		fields = append(fields, link.FieldUserID)
 	}
@@ -830,9 +780,6 @@ func (m *LinkMutation) Fields() []string {
 	if m.created_at != nil {
 		fields = append(fields, link.FieldCreatedAt)
 	}
-	if m.published_at != nil {
-		fields = append(fields, link.FieldPublishedAt)
-	}
 	return fields
 }
 
@@ -865,8 +812,6 @@ func (m *LinkMutation) Field(name string) (ent.Value, bool) {
 		return m.SavedAt()
 	case link.FieldCreatedAt:
 		return m.CreatedAt()
-	case link.FieldPublishedAt:
-		return m.PublishedAt()
 	}
 	return nil, false
 }
@@ -900,8 +845,6 @@ func (m *LinkMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldSavedAt(ctx)
 	case link.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
-	case link.FieldPublishedAt:
-		return m.OldPublishedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Link field %s", name)
 }
@@ -995,13 +938,6 @@ func (m *LinkMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCreatedAt(v)
 		return nil
-	case link.FieldPublishedAt:
-		v, ok := value.(time.Time)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPublishedAt(v)
-		return nil
 	}
 	return fmt.Errorf("unknown Link field %s", name)
 }
@@ -1056,9 +992,6 @@ func (m *LinkMutation) ClearedFields() []string {
 	if m.FieldCleared(link.FieldTags) {
 		fields = append(fields, link.FieldTags)
 	}
-	if m.FieldCleared(link.FieldPublishedAt) {
-		fields = append(fields, link.FieldPublishedAt)
-	}
 	return fields
 }
 
@@ -1096,9 +1029,6 @@ func (m *LinkMutation) ClearField(name string) error {
 		return nil
 	case link.FieldTags:
 		m.ClearTags()
-		return nil
-	case link.FieldPublishedAt:
-		m.ClearPublishedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Link nullable field %s", name)
@@ -1143,9 +1073,6 @@ func (m *LinkMutation) ResetField(name string) error {
 		return nil
 	case link.FieldCreatedAt:
 		m.ResetCreatedAt()
-		return nil
-	case link.FieldPublishedAt:
-		m.ResetPublishedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Link field %s", name)

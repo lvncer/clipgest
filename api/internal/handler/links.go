@@ -62,12 +62,10 @@ func (h *LinksHandler) CreateLink(c *gin.Context) {
 	// or in a background job to avoid slowing down the save request.
 	// For MVP, we do it synchronously but with a short timeout inside the service.
 	var description, ogImage string
-	var publishedAt *time.Time
 	meta, err := service.FetchMetadata(req.URL)
 	if err == nil {
 		description = meta.Description
 		ogImage = meta.Image
-		publishedAt = meta.PublishedAt
 		// If title was not provided or is just the URL, use OGP title
 		if req.Title == "" || req.Title == req.URL {
 			if meta.Title != "" {
@@ -96,7 +94,6 @@ func (h *LinksHandler) CreateLink(c *gin.Context) {
 		PageURL:     req.PageURL,
 		Note:        req.Note,
 		Tags:        tags,
-		PublishedAt: publishedAt,
 	})
 	if err != nil {
 		log.Printf("repository error: %v", err)
@@ -245,6 +242,5 @@ func (h *LinksHandler) GetOGP(c *gin.Context) {
 		"title":       meta.Title,
 		"description": meta.Description,
 		"image":       meta.Image,
-		"date":        meta.PublishedAt,
 	})
 }

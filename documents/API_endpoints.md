@@ -35,7 +35,7 @@
   - **任意**: `note`（string）, `tags`（string[]）
 - **挙動メモ**:
   - `url` から `domain` を抽出（`www.` は除去）
-  - OGP を同期取得して `description` / `og_image` / `published_at` を保存（取得失敗時は空のまま保存されることあり）
+  - OGP を同期取得して `description` / `og_image` を保存（取得失敗時は空のまま保存されることあり）
 - **レスポンス**: `200 {"id":"<uuid>"}`
 
 ### `GET /api/links`
@@ -54,12 +54,12 @@
   - **domain**: ドメイン完全一致（`www.` は除去して比較）
   - **tag**: 複数指定可（例 `?tag=a&tag=b`）。空要素は除外、重複は除去。**OR 条件（いずれかのタグを含む）**
 - **ソート順（実装準拠）**:
-  - `ORDER BY COALESCE(published_at, saved_at) DESC, saved_at DESC, id DESC`
+  - `ORDER BY saved_at DESC, id DESC`
 - **レスポンス**: `200 {"links":[...]}`
 
 ### `GET /api/og`
 
-- **概要**: 指定 URL の OGP（＋日付）を取得する
+- **概要**: 指定 URL の OGP を取得する
 - **認証**: 必須（※ハンドラ内では `user_id` を参照しないが、`/api/*` グループなので JWT は必須）
 - **実装**:
   - ルート登録: [`api/internal/handler/links.go`](../api/internal/handler/links.go)
@@ -68,5 +68,4 @@
 - **クエリパラメータ**:
   - **url**: 必須（string）
 - **レスポンス**:
-  - `200 { "title": string, "description": string, "image": string, "date": time|null }`
-  - `date` は `published_at` 相当（取得できなければ `null`）
+  - `200 { "title": string, "description": string, "image": string }`

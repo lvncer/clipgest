@@ -235,26 +235,6 @@ func (_u *LinkUpdate) SetNillableCreatedAt(v *time.Time) *LinkUpdate {
 	return _u
 }
 
-// SetPublishedAt sets the "published_at" field.
-func (_u *LinkUpdate) SetPublishedAt(v time.Time) *LinkUpdate {
-	_u.mutation.SetPublishedAt(v)
-	return _u
-}
-
-// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
-func (_u *LinkUpdate) SetNillablePublishedAt(v *time.Time) *LinkUpdate {
-	if v != nil {
-		_u.SetPublishedAt(*v)
-	}
-	return _u
-}
-
-// ClearPublishedAt clears the value of the "published_at" field.
-func (_u *LinkUpdate) ClearPublishedAt() *LinkUpdate {
-	_u.mutation.ClearPublishedAt()
-	return _u
-}
-
 // Mutation returns the LinkMutation object of the builder.
 func (_u *LinkUpdate) Mutation() *LinkMutation {
 	return _u.mutation
@@ -373,12 +353,6 @@ func (_u *LinkUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(link.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.PublishedAt(); ok {
-		_spec.SetField(link.FieldPublishedAt, field.TypeTime, value)
-	}
-	if _u.mutation.PublishedAtCleared() {
-		_spec.ClearField(link.FieldPublishedAt, field.TypeTime)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -606,26 +580,6 @@ func (_u *LinkUpdateOne) SetNillableCreatedAt(v *time.Time) *LinkUpdateOne {
 	return _u
 }
 
-// SetPublishedAt sets the "published_at" field.
-func (_u *LinkUpdateOne) SetPublishedAt(v time.Time) *LinkUpdateOne {
-	_u.mutation.SetPublishedAt(v)
-	return _u
-}
-
-// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
-func (_u *LinkUpdateOne) SetNillablePublishedAt(v *time.Time) *LinkUpdateOne {
-	if v != nil {
-		_u.SetPublishedAt(*v)
-	}
-	return _u
-}
-
-// ClearPublishedAt clears the value of the "published_at" field.
-func (_u *LinkUpdateOne) ClearPublishedAt() *LinkUpdateOne {
-	_u.mutation.ClearPublishedAt()
-	return _u
-}
-
 // Mutation returns the LinkMutation object of the builder.
 func (_u *LinkUpdateOne) Mutation() *LinkMutation {
 	return _u.mutation
@@ -774,12 +728,6 @@ func (_u *LinkUpdateOne) sqlSave(ctx context.Context) (_node *Link, err error) {
 	}
 	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(link.FieldCreatedAt, field.TypeTime, value)
-	}
-	if value, ok := _u.mutation.PublishedAt(); ok {
-		_spec.SetField(link.FieldPublishedAt, field.TypeTime, value)
-	}
-	if _u.mutation.PublishedAtCleared() {
-		_spec.ClearField(link.FieldPublishedAt, field.TypeTime)
 	}
 	_node = &Link{config: _u.config}
 	_spec.Assign = _node.assignValues

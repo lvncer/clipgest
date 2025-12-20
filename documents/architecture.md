@@ -55,10 +55,10 @@
 - データ取得方法：
   - クライアント（useSWR）からは `/api/links` と `/api/og` を叩く。
   - **useSWR によるキャッシュ**: クライアントサイドでデータをキャッシュし、30 秒ごとに自動更新。
-  - **OGP 情報の表示**: サムネイル画像、Description、公開日/更新日を表示（M3 で実装済み）。
+  - **OGP 情報の表示**: サムネイル画像、Description を表示（M3 で実装済み）。
     - 表示時に Go API の `/api/og` を呼び出してリアルタイムで OGP 情報を取得。
     - 各リンクカードが個別に OGP 情報を取得するため、非同期に読み込まれる。
-    - 日付表示の優先順位: リアルタイム取得した日付 > DB の `published_at` > DB の `saved_at`。
+    - 日付は DB の `saved_at` を表示（公開日/更新日概念は撤去）。
 - ページ構成（最小）：
   - `/` … 最近保存されたリンクのリストページ。
     - 各リンクの `title` / `url` / `domain` / `og_image` / `description` / `saved_at` を表示。
@@ -86,7 +86,6 @@
       note TEXT
       tags JSONB "[]string（GIN index あり）"
       metadata JSONB "default {}"
-      published_at TIMESTAMPTZ "記事の公開日/更新日（OGP から取得）"
       saved_at TIMESTAMPTZ
       created_at TIMESTAMPTZ
     }
