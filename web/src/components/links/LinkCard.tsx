@@ -10,7 +10,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
 import { ja } from "date-fns/locale";
-import { ExternalLink, Globe, Calendar, ImageIcon, Clock } from "lucide-react";
+import { ExternalLink, Globe, ImageIcon, Clock } from "lucide-react";
 import Link from "next/link";
 import useSWR from "swr";
 import { useAuth } from "@clerk/nextjs";
@@ -63,9 +63,8 @@ export default function LinkCard({ link }: { link: LinkItem }) {
   const displayTitle = ogData?.title || link.title || "No Title";
 
   // 日付の表示ロジック
-  // リアルタイム取得した日付 > DBの公開日 > DBの保存日 の優先順位
-  const displayDate = ogData?.date || link.published_at || link.saved_at;
-  const isPublished = !!(ogData?.date || link.published_at);
+  // 保存日を表示（published_at/公開概念は撤去）
+  const displayDate = link.saved_at;
 
   return (
     <Card className="group hover:shadow-md transition-all duration-300 hover:border-primary/50 overflow-hidden flex flex-col h-full bg-card/80 backdrop-blur-sm">
@@ -149,20 +148,13 @@ export default function LinkCard({ link }: { link: LinkItem }) {
       <CardFooter className="text-xs text-muted-foreground flex justify-between items-center">
         <div
           className="flex items-center gap-1.5"
-          title={
-            isPublished ? `公開日: ${displayDate}` : `保存日: ${displayDate}`
-          }
+          title={`保存日: ${displayDate}`}
         >
-          {isPublished ? (
-            <Calendar className="w-3 h-3" />
-          ) : (
-            <Clock className="w-3 h-3" />
-          )}
+          <Clock className="w-3 h-3" />
           {formatDistanceToNow(new Date(displayDate), {
             addSuffix: true,
             locale: ja,
           })}
-          {isPublished && <span className="ml-1 opacity-70">(公開)</span>}
         </div>
         <Link
           href={link.url}

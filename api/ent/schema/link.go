@@ -67,9 +67,6 @@ func (Link) Fields() []ent.Field {
 		field.Time("created_at").
 			Default(time.Now).
 			Annotations(entsql.DefaultExpr("now()")),
-		field.Time("published_at").
-			Optional().
-			Nillable(),
 	}
 }
 
@@ -81,8 +78,6 @@ func (Link) Indexes() []ent.Index {
 			Annotations(entsql.DescColumns("saved_at")),
 		index.Fields("domain").
 			StorageKey("idx_links_domain"),
-		index.Fields("published_at").
-			StorageKey("idx_links_published_at"),
 		index.Fields("tags").
 			StorageKey("idx_links_tags_gin").
 			Annotations(entsql.IndexType("GIN")),

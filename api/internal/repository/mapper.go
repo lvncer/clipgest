@@ -56,7 +56,6 @@ func entLinkToModel(l *appent.Link) model.Link {
 		Note:        note,
 		Tags:        tags,
 		UserID:      userID,
-		PublishedAt: l.PublishedAt,
 		SavedAt:     l.SavedAt,
 	}
 }

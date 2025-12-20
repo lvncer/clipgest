@@ -10,7 +10,6 @@ export interface Link {
   tags: string[];
   user_id: string;
   saved_at: string;
-  published_at?: string;
 }
 
 export interface LinksResponse {

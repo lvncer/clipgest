@@ -42,9 +42,7 @@ type Link struct {
 	// SavedAt holds the value of the "saved_at" field.
 	SavedAt time.Time `json:"saved_at,omitempty"`
 	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// PublishedAt holds the value of the "published_at" field.
-	PublishedAt  *time.Time `json:"published_at,omitempty"`
+	CreatedAt    time.Time `json:"created_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -57,7 +55,7 @@ func (*Link) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case link.FieldUserID, link.FieldURL, link.FieldTitle, link.FieldDescription, link.FieldDomain, link.FieldOgImage, link.FieldPageURL, link.FieldNote:
 			values[i] = new(sql.NullString)
-		case link.FieldSavedAt, link.FieldCreatedAt, link.FieldPublishedAt:
+		case link.FieldSavedAt, link.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
 		case link.FieldID:
 			values[i] = new(uuid.UUID)
@@ -165,13 +163,6 @@ func (_m *Link) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
 			}
-		case link.FieldPublishedAt:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field published_at", values[i])
-			} else if value.Valid {
-				_m.PublishedAt = new(time.Time)
-				*_m.PublishedAt = value.Time
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -257,11 +248,6 @@ func (_m *Link) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", ")
-	if v := _m.PublishedAt; v != nil {
-		builder.WriteString("published_at=")
-		builder.WriteString(v.Format(time.ANSIC))
-	}
 	builder.WriteByte(')')
 	return builder.String()
 }

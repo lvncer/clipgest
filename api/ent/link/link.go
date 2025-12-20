@@ -38,8 +38,6 @@ const (
 	FieldSavedAt = "saved_at"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
-	// FieldPublishedAt holds the string denoting the published_at field in the database.
-	FieldPublishedAt = "published_at"
 	// Table holds the table name of the link in the database.
 	Table = "links"
 )
@@ -59,7 +57,6 @@ var Columns = []string{
 	FieldMetadata,
 	FieldSavedAt,
 	FieldCreatedAt,
-	FieldPublishedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -141,9 +138,4 @@ func BySavedAt(opts ...sql.OrderTermOption) OrderOption {
 // ByCreatedAt orders the results by the created_at field.
 func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
-}
-
-// ByPublishedAt orders the results by the published_at field.
-func ByPublishedAt(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldPublishedAt, opts...).ToFunc()
 }

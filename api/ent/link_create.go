@@ -165,20 +165,6 @@ func (_c *LinkCreate) SetNillableCreatedAt(v *time.Time) *LinkCreate {
 	return _c
 }
 
-// SetPublishedAt sets the "published_at" field.
-func (_c *LinkCreate) SetPublishedAt(v time.Time) *LinkCreate {
-	_c.mutation.SetPublishedAt(v)
-	return _c
-}
-
-// SetNillablePublishedAt sets the "published_at" field if the given value is not nil.
-func (_c *LinkCreate) SetNillablePublishedAt(v *time.Time) *LinkCreate {
-	if v != nil {
-		_c.SetPublishedAt(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *LinkCreate) SetID(v uuid.UUID) *LinkCreate {
 	_c.mutation.SetID(v)
@@ -338,10 +324,6 @@ func (_c *LinkCreate) createSpec() (*Link, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(link.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
-	}
-	if value, ok := _c.mutation.PublishedAt(); ok {
-		_spec.SetField(link.FieldPublishedAt, field.TypeTime, value)
-		_node.PublishedAt = &value
 	}
 	return _node, _spec
 }

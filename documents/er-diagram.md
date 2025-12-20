@@ -38,7 +38,6 @@ erDiagram
     text note
     text[] tags
     jsonb metadata
-    timestamptz published_at "記事の公開日/更新日（OGP から取得）"
     timestamptz saved_at
     timestamptz created_at
     timestamptz updated_at

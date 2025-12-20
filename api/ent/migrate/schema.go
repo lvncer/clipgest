@@ -24,7 +24,6 @@ var (
 		{Name: "metadata", Type: field.TypeJSON, Default: schema.Expr("'{}'::jsonb")},
 		{Name: "saved_at", Type: field.TypeTime, Default: schema.Expr("now()")},
 		{Name: "created_at", Type: field.TypeTime, Default: schema.Expr("now()")},
-		{Name: "published_at", Type: field.TypeTime, Nullable: true},
 	}
 	// LinksTable holds the schema information for the "links" table.
 	LinksTable = &schema.Table{
@@ -46,11 +45,6 @@ var (
 				Name:    "idx_links_domain",
 				Unique:  false,
 				Columns: []*schema.Column{LinksColumns[5]},
-			},
-			{
-				Name:    "idx_links_published_at",
-				Unique:  false,
-				Columns: []*schema.Column{LinksColumns[13]},
 			},
 			{
 				Name:    "idx_links_tags_gin",

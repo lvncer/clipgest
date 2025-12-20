@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -29,7 +28,6 @@ type CreateLinkInput struct {
 	PageURL     string
 	Note        string
 	Tags        []string
-	PublishedAt *time.Time
 }
 
 type ListLinksFilter struct {
@@ -61,7 +59,6 @@ func (r *entLinkRepository) CreateLink(ctx context.Context, input CreateLinkInpu
 		SetPageURL(input.PageURL).
 		SetNote(input.Note).
 		SetTags(input.Tags).
-		SetNillablePublishedAt(input.PublishedAt).
 		Save(ctx)
 	if err != nil {
 		return "", err
@@ -90,7 +87,6 @@ func (r *entLinkRepository) ListLinks(ctx context.Context, userID string, filter
 			link.FieldTags,
 			link.FieldSavedAt,
 			link.FieldCreatedAt,
-			link.FieldPublishedAt,
 		).
 		Where(link.UserIDEQ(userID)).
 		Where(func(s *sql.Selector) {
@@ -99,27 +95,21 @@ func (r *entLinkRepository) ListLinks(ctx context.Context, userID string, filter
 				s.Where(sql.EQ(s.C(link.FieldDomain), filter.Domain))
 			}
 
-			// Time-range filter (COALESCE(published_at, saved_at)).
+			// Time-range filter (saved_at).
 			if filter.From != nil || filter.To != nil {
 				if filter.From != nil {
 					from := *filter.From
 					s.Where(sql.P(func(b *sql.Builder) {
-						b.WriteString("COALESCE(")
-						b.WriteString(s.C(link.FieldPublishedAt))
-						b.WriteString(", ")
 						b.WriteString(s.C(link.FieldSavedAt))
-						b.WriteString(") >= ")
+						b.WriteString(" >= ")
 						b.Arg(from)
 					}))
 				}
 				if filter.To != nil {
 					to := *filter.To
 					s.Where(sql.P(func(b *sql.Builder) {
-						b.WriteString("COALESCE(")
-						b.WriteString(s.C(link.FieldPublishedAt))
-						b.WriteString(", ")
 						b.WriteString(s.C(link.FieldSavedAt))
-						b.WriteString(") < ")
+						b.WriteString(" < ")
 						b.Arg(to)
 					}))
 				}
@@ -149,18 +139,10 @@ func (r *entLinkRepository) ListLinks(ctx context.Context, userID string, filter
 				}
 			}
 		}).
-		Order(func(s *sql.Selector) {
-			effective := fmt.Sprintf(
-				"COALESCE(%s, %s)",
-				s.C(link.FieldPublishedAt),
-				s.C(link.FieldSavedAt),
-			)
-			s.OrderBy(
-				sql.Desc(effective),
-				sql.Desc(s.C(link.FieldSavedAt)),
-				sql.Desc(s.C(link.FieldID)),
-			)
-		}).
+		Order(
+			link.BySavedAt(sql.OrderDesc()),
+			link.ByID(sql.OrderDesc()),
+		).
 		Limit(limit).
 		All(ctx)
 	if err != nil {
