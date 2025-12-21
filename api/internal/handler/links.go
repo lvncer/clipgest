@@ -238,6 +238,11 @@ func (h *LinksHandler) GetOGP(c *gin.Context) {
 		return
 	}
 
+	// Helpful for debugging in devtools when some sites return empty OGP due to bot protections.
+	if meta != nil && meta.Source != "" {
+		c.Header("X-QuickLinks-OGP-Source", meta.Source)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"title":       meta.Title,
 		"description": meta.Description,
