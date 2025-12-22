@@ -5,6 +5,22 @@
 フォーマットは [Keep a Changelog](https://keepachangelog.com/ja/1.0.0/) に基づいており、
 このプロジェクトは [Semantic Versioning](https://semver.org/lang/ja/) に準拠しています。
 
+## 0.4.2.3 - 2025-12-22
+
+- Changed
+
+  - リンクタイトルを切り捨てずに完全に表示するように変更。（[8267f34](https://github.com/lvncer/quicklinks/commit/8267f34a690b0e554ae1467bd4c18c957eb1d831)）
+  - リンクのタイトルを一行で表示するように変更。（[b8afb5a](https://github.com/lvncer/quicklinks/commit/b8afb5ab529125231abd3aa1ff09d598c5ec06da)）
+
+## 0.4.2.2 - 2025-12-22
+
+- Fixed
+
+  - チャレンジ検知フラグが意図せず false になってしまうことがあるバグを修正。（[#37](https://github.com/lvncer/quicklinks/pull/37)）
+  - リンク作成時に description/og_image を補完するように修正。（[#36](https://github.com/lvncer/quicklinks/pull/36)）
+  - OGP フェッチを r.jina.ai 経由のフォールバックに修正。（[#35](https://github.com/lvncer/quicklinks/pull/35)）
+  - フェッチ成功率を向上させるために、User-Agent ヘッダーと Accept ヘッダーを修正。（[#34](https://github.com/lvncer/quicklinks/pull/34)）
+
 ## 0.4.2.1
 
 - Deleted
