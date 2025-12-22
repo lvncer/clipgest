@@ -102,7 +102,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
         </div>
 
         {/* 右側: コンテンツ */}
-        <div className="flex flex-col min-w-0">
+        <div className="flex flex-1 flex-col min-w-0">
           <CardHeader>
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
@@ -110,12 +110,12 @@ export default function LinkCard({ link }: { link: LinkItem }) {
                 <span className="truncate max-w-[150px]">{link.domain}</span>
               </div>
             </div>
-            <CardTitle className="text-lg leading-snug truncate group-hover:text-primary transition-colors">
+            <CardTitle className="text-lg leading-snug whitespace-normal wrap-break-word group-hover:text-primary transition-colors">
               <Link
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block truncate hover:underline decoration-primary/50 underline-offset-4"
+                className="block whitespace-normal wrap-break-word hover:underline decoration-primary/50 underline-offset-4"
               >
                 {displayTitle}
               </Link>
