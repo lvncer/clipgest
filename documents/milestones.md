@@ -6,30 +6,32 @@
 
 ## 目次と進捗
 
-| 番号                                                     | マイルストーン                                  | 完了 | 完了日     | PR                                                  |
-| -------------------------------------------------------- | ----------------------------------------------- | ---- | ---------- | --------------------------------------------------- |
-| [M0](#m0-コンセプト固定--インフラ準備)                   | コンセプト固定 & インフラ準備                   | ✅   |            |                                                     |
-| [M1](#m1-api-サーバー最小実装リンク保存)                 | API サーバー最小実装（リンク保存）              | ✅   | 2025-11-27 | [#1](https://github.com/lvncer/quicklinks/pull/1)   |
-| [M2](#m2-ブラウザ拡張-mvpスマホ長押し--pc-右クリック)    | ブラウザ拡張 MVP（PC 右クリック）               | ✅   | 2025-11-28 | [#2](https://github.com/lvncer/quicklinks/pull/2)   |
-| [M3](#m3-web-ダッシュボード-mvpリンク一覧)               | Web ダッシュボード MVP （リンク一覧）           | ✅   | 2025-11-28 | [#3](https://github.com/lvncer/quicklinks/pull/3)   |
-| [M3.1](#m31-clerk-認証への完全移行-)                     | Clerk 認証への完全移行                          | ✅   | 2025-11-30 | [#4](https://github.com/lvncer/quicklinks/pull/4)   |
-| [M3.5](#m35-早期デプロイプライベート本番)                | 早期デプロイ（プライベート本番）                | ✅   | 2025-12-02 |                                                     |
-| [M3.6](#m36-拡張--web-の設定フロー改善)                  | 拡張 & Web の設定フロー改善                     | ✅   | 2025-12-03 | [#7](https://github.com/lvncer/quicklinks/pull/7)   |
-| [M3.7](#m37-開発基盤の強化docker-ci-依存関係)            | 開発基盤の強化 （Docker, CI, 依存関係）         | ✅   | 2025-12-06 | [#9](https://github.com/lvncer/quicklinks/pull/9)   |
-| [M3.8](#m38-go-api-の-orm-導入ent)                       | Go API の ORM 導入 （ent）                      | ✅   | 2025-12-10 | [#23](https://github.com/lvncer/quicklinks/pull/23) |
-| [M3.8.5](#m385-api-本番ホスティングの-render-移行-)      | API 本番ホスティングの Render 移行              | ✅   | 2025-12-10 |                                                     |
-| [M3.9](#m39-ルートページを紹介-lp-化)                    | ルートページを紹介 LP 化                        | ✅   | 2025-12-12 | [#24](https://github.com/lvncer/quicklinks/pull/24) |
-| [M4](#m4-検索フィルタリング--タグ使い勝手の向上-)        | 検索フィルタリング（タグ使い勝手の向上）        | ✅   | 2025-12-15 | [#25](https://github.com/lvncer/quicklinks/pull/25) |
-| [M4.1](#m41-リンク一覧のルート化--フィルター-ui-改善)    | リンク一覧のルート化・フィルター UI 改善        | ✅   | 2025-12-15 | [#26](https://github.com/lvncer/quicklinks/pull/26) |
-| [M4.2](#m42-週次月次クイックフィルター)                  | 週次/月次クイックフィルター                     |      |            |                                                     |
-| [M4.3](#m43-ogp-取得の保存時集約read-api-は-db-参照のみ) | OGP 取得の保存時集約（Read API は DB 参照のみ） |      |            |                                                     |
-| [M4.5](#m45-web-ui-でリンクの更新削除memo)               | Web UI でリンクの更新削除                       |      |            |                                                     |
-| [M4.6](#m46-拡張-ui-でメモ付き保存)                      | 拡張 UI でメモ付き保存                          |      |            |                                                     |
-| [M5](#m5-ダイジェスト生成の土台手動トリガ)               | ダイジェスト生成の土台手動トリガ                |      |            |                                                     |
-| [M6](#m6-ai-要約の磨き込み自動ジョブなし)                | AI 要約の磨き込み自動ジョブなし                 |      |            |                                                     |
-| [M7](#m7-本番運用安全性の強化)                           | 本番運用安全性の強化                            |      |            |                                                     |
-| [M7.5](#m75-アプリ領域を分離)                            | アプリ領域を分離                                |      |            |                                                     |
-| [M8](#m8-自動ジョブ--通知最終版)                         | 自動ジョブ通知最終版                            |      |            |                                                     |
+| 番号                                                            | マイルストーン                                       | 完了 | 完了日     | PR                                                  |
+| --------------------------------------------------------------- | ---------------------------------------------------- | ---- | ---------- | --------------------------------------------------- |
+| [M0](#m0-コンセプト固定--インフラ準備)                          | コンセプト固定 & インフラ準備                        | ✅   |            |                                                     |
+| [M1](#m1-api-サーバー最小実装リンク保存)                        | API サーバー最小実装（リンク保存）                   | ✅   | 2025-11-27 | [#1](https://github.com/lvncer/quicklinks/pull/1)   |
+| [M2](#m2-ブラウザ拡張-mvpスマホ長押し--pc-右クリック)           | ブラウザ拡張 MVP（PC 右クリック）                    | ✅   | 2025-11-28 | [#2](https://github.com/lvncer/quicklinks/pull/2)   |
+| [M3](#m3-web-ダッシュボード-mvpリンク一覧)                      | Web ダッシュボード MVP （リンク一覧）                | ✅   | 2025-11-28 | [#3](https://github.com/lvncer/quicklinks/pull/3)   |
+| [M3.1](#m31-clerk-認証への完全移行-)                            | Clerk 認証への完全移行                               | ✅   | 2025-11-30 | [#4](https://github.com/lvncer/quicklinks/pull/4)   |
+| [M3.5](#m35-早期デプロイプライベート本番)                       | 早期デプロイ（プライベート本番）                     | ✅   | 2025-12-02 |                                                     |
+| [M3.6](#m36-拡張--web-の設定フロー改善)                         | 拡張 & Web の設定フロー改善                          | ✅   | 2025-12-03 | [#7](https://github.com/lvncer/quicklinks/pull/7)   |
+| [M3.7](#m37-開発基盤の強化docker-ci-依存関係)                   | 開発基盤の強化 （Docker, CI, 依存関係）              | ✅   | 2025-12-06 | [#9](https://github.com/lvncer/quicklinks/pull/9)   |
+| [M3.8](#m38-go-api-の-orm-導入ent)                              | Go API の ORM 導入 （ent）                           | ✅   | 2025-12-10 | [#23](https://github.com/lvncer/quicklinks/pull/23) |
+| [M3.8.5](#m385-api-本番ホスティングの-render-移行-)             | API 本番ホスティングの Render 移行                   | ✅   | 2025-12-10 |                                                     |
+| [M3.9](#m39-ルートページを紹介-lp-化)                           | ルートページを紹介 LP 化                             | ✅   | 2025-12-12 | [#24](https://github.com/lvncer/quicklinks/pull/24) |
+| [M4](#m4-検索フィルタリング--タグ使い勝手の向上-)               | 検索フィルタリング（タグ使い勝手の向上）             | ✅   | 2025-12-15 | [#25](https://github.com/lvncer/quicklinks/pull/25) |
+| [M4.1](#m41-リンク一覧のルート化--フィルター-ui-改善)           | リンク一覧のルート化・フィルター UI 改善             | ✅   | 2025-12-15 | [#26](https://github.com/lvncer/quicklinks/pull/26) |
+| [M4.1.5](#m415-clipgest-への最小移行ドメイン変更--clerk-本番化) | clipgest への最小移行（ドメイン変更 + Clerk 本番化） |      |            |                                                     |
+| [M4.1.6](#m416-clipgest-への完全移行リネーム清掃)               | clipgest への完全移行（リネーム清掃）                |      |            |                                                     |
+| [M4.2](#m42-週次月次クイックフィルター)                         | 週次/月次クイックフィルター                          |      |            |                                                     |
+| [M4.3](#m43-ogp-取得の保存時集約read-api-は-db-参照のみ)        | OGP 取得の保存時集約（Read API は DB 参照のみ）      |      |            |                                                     |
+| [M4.5](#m45-web-ui-でリンクの更新削除memo)                      | Web UI でリンクの更新削除                            |      |            |                                                     |
+| [M4.6](#m46-拡張-ui-でメモ付き保存)                             | 拡張 UI でメモ付き保存                               |      |            |                                                     |
+| [M5](#m5-ダイジェスト生成の土台手動トリガ)                      | ダイジェスト生成の土台手動トリガ                     |      |            |                                                     |
+| [M6](#m6-ai-要約の磨き込み自動ジョブなし)                       | AI 要約の磨き込み自動ジョブなし                      |      |            |                                                     |
+| [M7](#m7-本番運用安全性の強化)                                  | 本番運用安全性の強化                                 |      |            |                                                     |
+| [M7.5](#m75-アプリ領域を分離)                                   | アプリ領域を分離                                     |      |            |                                                     |
+| [M8](#m8-自動ジョブ--通知最終版)                                | 自動ジョブ通知最終版                                 |      |            |                                                     |
 
 ## M0: コンセプト固定 & インフラ準備
 
@@ -239,6 +241,51 @@
   - Docs
     - `src/app/about/page.tsx` の拡張機能案内を Chrome Web Store 導線に更新する
     - `documents/SETUP_Extension.md` を Chrome Web Store 前提の案内に更新する（開発者向け手順は必要に応じて残す）
+
+## M4.1.5: clipgest への最小移行（ドメイン変更 + Clerk 本番化）
+
+- **目的**: まずは壊さずに **`clipgest.com` / `www.clipgest.com`** で動く状態にする（内部の変数名や識別子は後回し）。
+- **前提（方針）**
+  - 旧ドメイン（例: `*.vercel.app`）は当面残し、**リダイレクトで段階移行**する
+  - API のドメインは変えない
+  - 将来 `app.` サブドメイン分離はするが今回はやらない
+- **やること（最低限）**
+  - Web/Vercel
+    - `clipgest.com` と `www.clipgest.com` を Vercel に割り当て
+    - 旧 `*.vercel.app` → 新ドメインへリダイレクト（段階移行）
+    - Web の表示名（metadata / LP 表記）を clipgest に変更（SEO 影響を最小化しつつ）
+  - Clerk（ここが主目的・最重要）
+    - **Clerk を Production に移行**（Development のまま本番運用しない）
+    - Production 用のキーに差し替え
+      - Web: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+      - API: `CLERK_SECRET_KEY`
+    - Allowed Origins / Redirect URLs に `https://clipgest.com` と `https://www.clipgest.com` を登録
+    - 移行期間中は旧ドメインも併記し、完全移行のタイミングで削除
+  - API（CORS）
+    - `ALLOWED_ORIGINS` に `https://clipgest.com, https://www.clipgest.com` を追加（移行期間は旧ドメインも併記）
+  - Chrome 拡張（Web↔ 拡張の認証同期が死にやすいので必須）
+    - `manifest(.dev).json` の `content_scripts[].matches` に
+      - `https://clipgest.com/*`
+      - `https://www.clipgest.com/*`
+      - （移行期間のみ）旧ドメインも併記
+    - ※ この段階では **変数名/JWT テンプレ名/識別子のリネームはやらない**
+
+## M4.1.6: clipgest への完全移行（リネーム清掃）
+
+- **目的**: 移行期間に併記したものや旧名称を整理し、運用・開発の混乱をなくす。
+- **やること（後回しにしたものをここで回収）**
+  - ドメインの清掃
+    - Clerk(Production) から旧ドメインを削除
+    - API の `ALLOWED_ORIGINS` から旧ドメインを削除
+    - 拡張の `manifest(.dev).json` から旧ドメイン `matches` を削除
+    - 旧ドメインのリダイレクト設計を確定（完全停止 or 永続リダイレクト）
+  - 命名/識別子の統一（必要なら）
+    - Web↔ 拡張メッセージの `source`、`type`、ログプレフィックスの `QuickLinks` を `clipgest` に寄せる
+    - Clerk JWT template 名（例: `quicklinks-extension` → `clipgest-extension`）を変えるなら、Clerk 側と同時に切り替え
+    - 拡張 `manifest.json` の `name` / `action.default_title` / `description` の更新
+  - ドキュメント/README/リンクの清掃
+    - `documents/` と `README.md` の旧表記・旧 URL を更新
+    - GitHub リポジトリ名を変えるならリンクも合わせて更新
 
 ## M4.2: 週次/月次クイックフィルター
 
