@@ -4,18 +4,13 @@ import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { ModeToggle } from "../theme-toggle";
 
 export default function AppHeader() {
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const isDark = mounted && (resolvedTheme === "dark" || theme === "dark");
+  const { resolvedTheme } = useTheme();
+  
+  // resolvedTheme が undefined の場合はサーバーサイドレンダリングなので、デフォルト（ライトモード）を使用
+  const isDark = resolvedTheme === "dark";
 
   return (
     <header className="py-12">

@@ -4,18 +4,13 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { ModeToggle } from "../theme-toggle";
 
 export default function WebHeader() {
-  const { theme, resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const isDark = mounted && (resolvedTheme === "dark" || theme === "dark");
+  const { resolvedTheme } = useTheme();
+  
+  // resolvedTheme が undefined の場合はサーバーサイドレンダリングなので、デフォルト（ライトモード）を使用
+  const isDark = resolvedTheme === "dark";
 
   return (
     <header className="py-6 px-4 md:px-8 max-w-7xl mx-auto w-full flex justify-between items-center">
