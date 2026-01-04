@@ -93,7 +93,7 @@ export default function LinksFilterPanel({
   };
 
   return (
-    <section className="mb-6 rounded-xl border border-border bg-card p-4">
+    <section className="mb-2 rounded-xl border border-border bg-card p-4">
       <div className="flex items-center justify-between gap-4">
         <div className="min-w-0 flex-1 space-y-2">
           <div className="flex items-center gap-2">
