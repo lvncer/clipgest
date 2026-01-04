@@ -8,12 +8,12 @@ import { ModeToggle } from "../theme-toggle";
 
 export default function AppHeader() {
   const { resolvedTheme } = useTheme();
-  
+
   // resolvedTheme が undefined の場合はサーバーサイドレンダリングなので、デフォルト（ライトモード）を使用
   const isDark = resolvedTheme === "dark";
 
   return (
-    <header className="py-12">
+    <header className="pt-8 pb-6">
       <div className="flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <Image

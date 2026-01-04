@@ -54,7 +54,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
     {
       revalidateOnFocus: false,
       dedupingInterval: 60000, // 1分間は再取得しない
-    },
+    }
   );
 
   // DBの値または取得したOGPデータを使用
@@ -102,12 +102,24 @@ export default function LinkCard({ link }: { link: LinkItem }) {
         </div>
 
         {/* 右側: コンテンツ */}
-        <div className="flex flex-1 flex-col min-w-0">
+        <div className="flex flex-1 flex-col min-w-0 gap-1">
           <CardHeader>
             <div className="flex items-start justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                <Globe className="w-3 h-3" />
-                <span className="truncate max-w-[150px]">{link.domain}</span>
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                  <Globe className="w-3 h-3" />
+                  <span className="truncate max-w-[150px]">{link.domain}</span>
+                </div>
+              </div>
+              <div
+                className="text-xs text-muted-foreground flex items-center gap-1.5"
+                title={`保存日: ${displayDate}`}
+              >
+                <Clock className="w-3 h-3" />
+                {formatDistanceToNow(new Date(displayDate), {
+                  addSuffix: true,
+                  locale: ja,
+                })}
               </div>
             </div>
             <CardTitle className="text-lg leading-snug whitespace-normal wrap-break-word group-hover:text-primary transition-colors">
@@ -154,27 +166,6 @@ export default function LinkCard({ link }: { link: LinkItem }) {
           </CardContent>
         </div>
       </div>
-      <CardFooter className="text-xs text-muted-foreground flex justify-between items-center">
-        <div
-          className="flex items-center gap-1.5"
-          title={`保存日: ${displayDate}`}
-        >
-          <Clock className="w-3 h-3" />
-          {formatDistanceToNow(new Date(displayDate), {
-            addSuffix: true,
-            locale: ja,
-          })}
-        </div>
-        <Link
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:bg-primary/10 rounded-full text-primary transition-colors p-2"
-          title="開く"
-        >
-          <ExternalLink className="w-4 h-4" />
-        </Link>
-      </CardFooter>
     </Card>
   );
 }
