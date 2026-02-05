@@ -7,7 +7,7 @@ const CONTEXT_MENU_ID = "quicklinks-save-link";
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
-    title: "Save link to Clipgest",
+    title: "Save link to Clipgest.",
     contexts: ["link"],
   });
 });
@@ -49,7 +49,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         tab.id,
         {
           type: "CLIPGEST_TOAST",
-          message: "Link saved!",
+          message: "link saved!",
           toastType: "success",
         }
       );

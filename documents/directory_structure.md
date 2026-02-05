@@ -1,40 +1,43 @@
 # 将来的なファイルツリー（完成系イメージ）
 
-最終的に目指すモノレポ構成のイメージ。実際の実装時には細かいファイル名は変わる可能性があるが、レイヤー構造と責務の単位感を示す。
-
-> 補足: ここに出てくる `worker/` や cron 相当の自動化は **最終版（M8 想定）** の話。M5〜M6 では「Web から手動でダイジェスト生成（手動 AI 要約）」を前提に進める。
+最終的に目指すモノレポ構成のイメージ。
+実際の実装時には細かいファイル名は変わる可能性があるが、レイヤー構造と責務の単位感を示す。
 
 ```sh
-quicklinks/
+/
 ├── README.md
-├── package.json                    # ルート共通ツール（bun 管理: Biome / Husky / lint-staged など）
-├── bun.lock                        # ルート bun 用ロックファイル
-├── biome.json                      # Biome 設定（web / extension 配下を対象に format）
-├── docker-compose.yml              # API + Web を同時起動する docker compose 設定
-├── .dockerignore                   # Docker ビルド用の ignore 設定
-├── turbo.json / nx.json            # （任意）モノレポツール設定
+├── package.json               # ルート共通ツール
+├── bun.lock                   # ルート bun 用ロックファイル
+├── biome.json                 # Biome 設定
+├── docker-compose.yml         # API + Web を同時起動する docker compose 設定
+├── .dockerignore              # Docker ビルド用の ignore 設定
 ├── .gitignore
 │
-├── .husky/                         # pre-commit で lint-staged を呼ぶフック
+├── .husky/
+│  └── pre-commit/             # lint-staged を呼ぶフック
 │
 ├── public/
-│   └── images/
+│  └── images/
 │
 ├── documents/
 │
+│
 ├── extension/
-│   ├── manifest.json               # Chrome 拡張機能マニフェスト (V3)
-│   ├── options.html                # 設定ページ
-│   ├── src/
-│   │   ├── background.ts           # API 呼び出し
-│   │   ├── content-script.ts       # 長押し検出＋Saveボタン表示
-│   │   ├── options.ts              # 設定ページのロジック
-│   │   ├── api.ts                  # API クライアント
-│   │   ├── storage.ts              # 設定保存（API ベース URL など）
-│   │   └── ui/
-│   │       └── toast.ts            # 保存完了トースト
-│   ├── icons/
-│   └── dist/                       # ビルド成果物
+│  ├── package.json            # 依存関係/ビルド・監視コマンド
+│  ├── bun.lock                # 依存のロックファイル
+│  ├── tsconfig.json           # TypeScript 設定
+│  ├── vite.config.ts          # src 直下 TS を全エントリにする Vite 設定
+│  ├── manifest.json           # 本番用マニフェスト
+│  ├── icons/                  # 拡張アイコン
+│  ├── dist/                   # ビルド成果物 （vite build で生成）
+│  └── src/
+│    ├── background.ts         # 背景処理 （保存/認証/メッセージ）
+│    ├── content-script.ts     # 画面側の通知受信と alert 表示
+│    ├── api.ts                # バックエンド API 呼び出し
+│    ├── auth.ts               # 認証状態やトークン処理
+│    ├── storage.ts            # Chrome storage への保存
+│    └── web-auth-bridge.ts    # Web → 拡張の認証ブリッジ
+│
 │
 ├── app/                            # Next.js アプリ本体（サブドメイン: app.quicklinks-zeta.vercel.app）
 │   ├── package.json
