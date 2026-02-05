@@ -13,22 +13,15 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  console.log("[QuickLinks] contextMenus.onClicked", {
-    info,
-    tabId: tab?.id,
-  });
-
   if (info.menuItemId !== CONTEXT_MENU_ID) return;
 
   const linkUrl = info.linkUrl;
   if (!linkUrl) {
-    console.error("[QuickLinks] No link URL found");
     return;
   }
 
   try {
     if (!(await isAuthenticated())) {
-      console.log("[QuickLinks] Context menu clicked but not authenticated");
       if (tab?.id) {
         chrome.tabs.sendMessage(
           tab.id,
@@ -36,24 +29,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
             type: "QUICKLINKS_TOAST",
             message: "Please log in first from the extension options",
             toastType: "error",
-          },
-          () => {
-            const err = chrome.runtime.lastError;
-            if (err) {
-              console.warn(
-                "[QuickLinks] Failed to send not-authenticated toast:",
-                err.message,
-              );
-            }
-          },
+          }
         );
       }
       return;
     }
 
-    const pageUrl = tab?.url || info.pageUrl || "";
-
     const linkText = info.selectionText || new URL(linkUrl).hostname;
+    const pageUrl = tab?.url || info.pageUrl || "";
 
     await saveLink({
       url: linkUrl,
@@ -62,27 +45,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
     });
 
     if (tab?.id) {
-      console.log("[QuickLinks] Sending success toast to tab", tab.id);
       chrome.tabs.sendMessage(
         tab.id,
         {
           type: "QUICKLINKS_TOAST",
           message: "Link saved!",
           toastType: "success",
-        },
-        () => {
-          const err = chrome.runtime.lastError;
-          if (err) {
-            console.warn(
-              "[QuickLinks] Failed to send success toast:",
-              err.message,
-            );
-          }
-        },
+        }
       );
     }
   } catch (error) {
-    console.error("[QuickLinks] Error while saving from context menu", error);
     if (tab?.id) {
       chrome.tabs.sendMessage(
         tab.id,
@@ -91,15 +63,6 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           message:
             error instanceof Error ? error.message : "Failed to save link",
           toastType: "error",
-        },
-        () => {
-          const err = chrome.runtime.lastError;
-          if (err) {
-            console.warn(
-              "[QuickLinks] Failed to send error toast:",
-              err.message,
-            );
-          }
         },
       );
     }
@@ -186,14 +149,6 @@ async function handleSaveAuthMessage(message: {
     const exp = typeof expValue === "number" ? expValue : undefined;
     const expiresAt = exp ? exp * 1000 : Date.now() + 60 * 60 * 1000;
 
-    console.log("[QuickLinks] handleSaveAuthMessage - parsed token", {
-      userId,
-      payload,
-      exp,
-      expiresAt,
-      now: Date.now(),
-    });
-
     const updates: {
       clerkToken: string;
       clerkUserId: string;
@@ -217,7 +172,6 @@ async function handleSaveAuthMessage(message: {
 
     return { success: true };
   } catch (error) {
-    console.error("[QuickLinks] Failed to save auth from Web:", error);
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

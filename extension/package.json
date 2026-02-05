@@ -1,19 +1,18 @@
 {
-  "name": "quicklinks-extension",
-  "version": "0.1.0",
-  "description": "QuickLinks browser extension - Save links with a long-press or right-click",
+  "name": "clipgest-extension",
+  "version": "1.0.0",
+  "description": "Save links with a right-click for Clipgest.",
   "private": true,
   "scripts": {
-    "build": "esbuild src/background.ts src/content-script.ts src/web-auth-bridge.ts src/options.ts --bundle --outdir=dist --format=esm --target=chrome120",
-    "watch": "esbuild src/background.ts src/content-script.ts src/web-auth-bridge.ts src/options.ts --bundle --outdir=dist --format=esm --target=chrome120 --watch",
+    "build": "vite build",
     "clean": "rm -rf dist/"
   },
   "devDependencies": {
     "@types/chrome": "^0.0.268",
     "@types/node": "^20.0.0",
-    "esbuild": "^0.21.0",
     "lucide-static": "^0.555.0",
     "sharp": "^0.33.0",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vite": "^7.3.1"
   }
 }

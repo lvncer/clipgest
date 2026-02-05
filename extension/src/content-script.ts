@@ -1,5 +1,3 @@
-import { showToast } from "./ui/toast";
-
 const LONG_PRESS_DURATION = 500;
 const SAVE_BUTTON_TIMEOUT = 5000;
 
@@ -146,13 +144,12 @@ async function handleSaveClick(event: Event): Promise<void> {
     });
 
     if (response.success) {
-      showToast("Link saved! ✨", "success");
+      window.alert("Link saved! ✨");
     } else {
-      showToast(response.error || "Failed to save link", "error");
+      window.alert(response.error || "Failed to save link");
     }
   } catch (error) {
-    console.error("[QuickLinks] Save error:", error);
-    showToast("Failed to save link", "error");
+    window.alert("Failed to save link");
   } finally {
     removeSaveButton();
   }
@@ -216,9 +213,8 @@ function handleDocumentClick(event: Event): void {
 }
 
 chrome.runtime.onMessage.addListener((message) => {
-  console.log("[QuickLinks] runtime.onMessage", message);
   if (message.type === "QUICKLINKS_TOAST") {
-    showToast(message.message, message.toastType || "info");
+    window.alert(message.message);
   }
 });
 
@@ -233,8 +229,6 @@ function init(): void {
   document.addEventListener("mousemove", handleMouseMove);
 
   document.addEventListener("click", handleDocumentClick);
-
-  console.log("[QuickLinks] Content script loaded");
 }
 
 init();
