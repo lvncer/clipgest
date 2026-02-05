@@ -10,16 +10,7 @@ export interface AuthState {
 export async function getAuthState(): Promise<AuthState> {
   const config = await getConfig();
 
-  console.log("[QuickLinks] getAuthState - config:", {
-    hasToken: !!config.clerkToken,
-    hasUserId: !!config.clerkUserId,
-    tokenLength: config.clerkToken?.length || 0,
-    expiresAt: config.clerkTokenExpiresAt,
-    now: Date.now(),
-  });
-
   if (!config.clerkToken || !config.clerkUserId) {
-    console.log("[QuickLinks] getAuthState - No token or user ID");
     return {
       isAuthenticated: false,
       userId: null,
@@ -30,9 +21,6 @@ export async function getAuthState(): Promise<AuthState> {
 
   const tokenParts = config.clerkToken.split(".");
   if (tokenParts.length !== 3) {
-    console.warn(
-      "[QuickLinks] getAuthState - Invalid token format, clearing auth",
-    );
     await clearAuthData();
     return {
       isAuthenticated: false,
@@ -43,11 +31,6 @@ export async function getAuthState(): Promise<AuthState> {
   }
 
   if (config.clerkTokenExpiresAt && Date.now() > config.clerkTokenExpiresAt) {
-    console.log("[QuickLinks] getAuthState - Token expired, clearing auth", {
-      expiresAt: config.clerkTokenExpiresAt,
-      now: Date.now(),
-      diffMs: config.clerkTokenExpiresAt - Date.now(),
-    });
     await clearAuthData();
     return {
       isAuthenticated: false,
@@ -60,9 +43,6 @@ export async function getAuthState(): Promise<AuthState> {
   const tokenPayload = parseJwt(config.clerkToken);
   const userId = tokenPayload?.sub as string | undefined;
   if (!tokenPayload || !userId) {
-    console.warn(
-      "[QuickLinks] getAuthState - Invalid token payload, clearing auth",
-    );
     await clearAuthData();
     return {
       isAuthenticated: false,
@@ -71,12 +51,6 @@ export async function getAuthState(): Promise<AuthState> {
       expiresAt: null,
     };
   }
-
-  console.log("[QuickLinks] getAuthState - Authenticated:", {
-    userId: config.clerkUserId,
-    tokenSub: userId,
-    matches: config.clerkUserId === userId,
-  });
 
   return {
     isAuthenticated: true,

@@ -43,10 +43,6 @@ export async function saveLink(
   const headers = await getAuthHeaders();
   const url = `${config.apiBaseUrl}/api/links`;
 
-  console.log("[QuickLinks] saveLink: POST", url, {
-    hasToken: !!headers.Authorization,
-  });
-
   let response: Response;
   try {
     response = await fetch(url, {
@@ -55,15 +51,8 @@ export async function saveLink(
       body: JSON.stringify(request),
     });
   } catch (err) {
-    console.error("[QuickLinks] saveLink: fetch failed", err);
     throw new Error("Network error while calling API");
   }
-
-  console.log(
-    "[QuickLinks] saveLink: response",
-    response.status,
-    response.statusText,
-  );
 
   if (response.status === 401) {
     throw new Error(
@@ -78,12 +67,6 @@ export async function saveLink(
     } catch {
       // ignore
     }
-
-    console.error("[QuickLinks] saveLink: API error body", {
-      status: response.status,
-      statusText: response.statusText,
-      bodyPreview: bodyText.slice(0, 300),
-    });
 
     let errorData: ApiError | null = null;
     try {
@@ -100,10 +83,8 @@ export async function saveLink(
 
   try {
     const data = (await response.json()) as SaveLinkResponse;
-    console.log("[QuickLinks] saveLink: success", { id: data.id });
     return data;
   } catch (err) {
-    console.error("[QuickLinks] saveLink: failed to parse JSON", err);
     throw new Error("Invalid JSON response from API");
   }
 }

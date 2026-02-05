@@ -7,7 +7,7 @@ const CONTEXT_MENU_ID = "quicklinks-save-link";
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: CONTEXT_MENU_ID,
-    title: "Save link to QuickLinks",
+    title: "Save link to Clipgest",
     contexts: ["link"],
   });
 });
@@ -26,7 +26,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
         chrome.tabs.sendMessage(
           tab.id,
           {
-            type: "QUICKLINKS_TOAST",
+            type: "CLIPGEST_TOAST",
             message: "Please log in first from the extension options",
             toastType: "error",
           }
@@ -48,7 +48,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: "QUICKLINKS_TOAST",
+          type: "CLIPGEST_TOAST",
           message: "Link saved!",
           toastType: "success",
         }
@@ -59,7 +59,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       chrome.tabs.sendMessage(
         tab.id,
         {
-          type: "QUICKLINKS_TOAST",
+          type: "CLIPGEST_TOAST",
           message:
             error instanceof Error ? error.message : "Failed to save link",
           toastType: "error",
@@ -88,7 +88,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
-  if (message.type === "QUICKLINKS_SAVE_AUTH") {
+  if (message.type === "CLIPGEST_SAVE_AUTH") {
     handleSaveAuthMessage(message)
       .then((result) => sendResponse(result))
       .catch((error) => sendResponse({ success: false, error: error.message }));
