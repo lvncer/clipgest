@@ -1,4 +1,4 @@
-export interface QuickLinksConfig {
+export interface ClipgestConfig {
   apiBaseUrl: string;
   clerkFrontendApiUrl: string;
   clerkToken: string;
@@ -6,7 +6,7 @@ export interface QuickLinksConfig {
   clerkTokenExpiresAt: number;
 }
 
-const DEFAULT_CONFIG: QuickLinksConfig = {
+const DEFAULT_CONFIG: ClipgestConfig = {
   apiBaseUrl: "https://quicklinks-hftb.onrender.com",
   clerkFrontendApiUrl: "",
   clerkToken: "",
@@ -14,7 +14,7 @@ const DEFAULT_CONFIG: QuickLinksConfig = {
   clerkTokenExpiresAt: 0,
 };
 
-export async function getConfig(): Promise<QuickLinksConfig> {
+export async function getConfig(): Promise<ClipgestConfig> {
   const result = await chrome.storage.sync.get(DEFAULT_CONFIG);
   return {
     apiBaseUrl: result.apiBaseUrl || DEFAULT_CONFIG.apiBaseUrl,
@@ -28,7 +28,7 @@ export async function getConfig(): Promise<QuickLinksConfig> {
 }
 
 export async function saveConfig(
-  config: Partial<QuickLinksConfig>,
+  config: Partial<ClipgestConfig>,
 ): Promise<void> {
   await chrome.storage.sync.set(config);
 }

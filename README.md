@@ -42,7 +42,7 @@
 
 ## 拡張機能について
 
-ブラウザ拡張のセットアップ方法は [`documents/SETUP_Extension.md`](documents/SETUP_Extension.md) を参照してください。
+ブラウザ拡張のセットアップ方法は [`documents/README.extension.md`](documents/README.extension.md) を参照してください。
 
 ## ローカル開発
 

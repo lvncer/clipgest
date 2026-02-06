@@ -25,8 +25,8 @@ export function ExtensionAuthSync() {
         const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE;
 
         const message = {
-          source: "quicklinks-web",
-          type: "QUICKLINKS_EXTENSION_AUTH" as const,
+          source: "clipgest-web",
+          type: "CLIPGEST_EXTENSION_AUTH" as const,
           token,
           userId,
           apiBaseUrl,
