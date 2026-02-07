@@ -15,15 +15,9 @@
 ├── .dockerignore       # Docker ビルド用の ignore 設定
 ├── .gitignore
 ├── .husky/
-│   └── pre-commit/     # lint-staged を呼ぶフック
+│   └── pre-commit      # lint-staged を呼ぶフック
 ├── public/images/
 ├── documents/
-├── dev-scripts/
-│   ├── run-all.sh                  # API + Web を同時に起動するスクリプト
-│   ├── stop-all.sh                 # API + Web をまとめて停止するスクリプト
-│   ├── test-api.sh                 # API の疎通テスト用スクリプト
-│   ├── format-go.sh                # go fmt ./... を手動実行するスクリプト
-│   └── build-all.sh                # API / Web / Extension のクリーン & ビルド用スクリプト
 └── .github/
     ├── dependabot.yml
     └── workflows/
