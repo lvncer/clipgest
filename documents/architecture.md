@@ -106,6 +106,7 @@ sequenceDiagram
 - ユーザーが `Save` を押すと、拡張が `{ url, title, page, note?, tags? }` を含む JSON を `POST /api/links` に送信（`Authorization: Bearer <Clerk JWT>`）。
 - API サーバーが JWT を検証し、DB にレコードを挿入。
 - **保存時に OGP を取得できる場合は取得して DB に反映**（失敗時は空/既存値のまま）。
+  - 直接取得で失敗/ブロックされた場合は `https://r.jina.ai/` 経由の取得にフォールバックする。
 - 挿入結果の `id` を JSON で返し、拡張が「Saved」トーストを表示。
 
 ```mermaid
@@ -113,13 +114,18 @@ sequenceDiagram
 actor User as User
 participant Ext as BrowserExtension
 participant API as Go API Server
+participant Jina as r.jina.ai
 participant DB as Supabase
 
 User->>Ext: リンクを長押し / 右クリックして Save 操作
 Ext->>API: POST /api/links (Authorization: Bearer <Clerk JWT>, url, title, page, note)
 API->>API: Clerk JWT 検証 & バリデーション
 alt OGP 取得が有効な場合
-  API->>API: 対象 URL の OGP を取得
+  API->>API: 対象 URL の OGP を取得（直接）
+  alt 取得失敗 or Bot チャレンジ検知
+    API->>Jina: https://r.jina.ai/{target_url}
+    Jina-->>API: OGP/本文から抽出した情報
+  end
 end
 API->>DB: INSERT INTO links (...)
 DB-->>API: 新しいリンク ID
