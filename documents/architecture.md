@@ -127,15 +127,10 @@ API-->>Ext: 200 OK { id }
 Ext-->>User: Saved トースト表示
 ```
 
-### 3. リンク取得（一覧）+ OGP 再取得（条件付き）フロー
+### 3. リンク取得フロー
 
 - ユーザーが Next.js Web アプリ（例：`http://localhost:3000`）にアクセス。
 - フロントエンドが初期ロード時に `GET {NEXT_PUBLIC_API_BASE}/api/links?limit=...` を叩き、最近のリンク一覧を取得。
-- リンク一覧の **表示時** に、各リンクカードが **条件付きで** OGP を再取得する。
-  - `link.url` と `NEXT_PUBLIC_API_BASE` があるときだけ `/api/og` を叩く。
-  - クライアント側で **60 秒は重複取得を抑制**（同じ URL への再リクエストをスキップ）。
-- 取得できた OGP は即座に UI に反映、失敗時は DB の `og_image` / `description` をフォールバックとして使う。
-- **将来方針**: リンク取得時の OGP 再取得は廃止し、**保存時のみ OGP 取得**・取得時は **DB の情報のみ**を返す構成へ移行してパフォーマンスを改善する。
 
 ```mermaid
 sequenceDiagram
@@ -150,15 +145,6 @@ API->>DB: SELECT * FROM links WHERE user_id = ...
 DB-->>API: リンク一覧
 API-->>Web: 200 OK (JSON)
 Web-->>User: リンク一覧をレンダリング
-
-alt link.url と API_BASE がある場合
-  Web->>API: GET /api/og?url=...
-  API->>API: 対象 URL の OGP を取得
-  API-->>Web: 200 OK (OGP JSON)
-  Web-->>User: OGP を反映して表示更新
-else 60 秒以内の再取得 or 条件未満
-  Web-->>User: DB の OGP を表示（フォールバック）
-end
 
 User->>Web: 任意のリンクをクリック
 Web-->>User: 別タブなどで元記事を表示
