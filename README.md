@@ -8,8 +8,6 @@
 
 気になった Web ページの URL をブラウザ拡張から一瞬で保存して、あとから Web ダッシュボードで見返したり、将来は週次・月次ダイジェストにまとめられるようにするアプリです。
 
-[https://quicklinks-zeta.vercel.app/about](https://quicklinks-zeta.vercel.app/about)
-
 ### 使い方
 
 1. 拡張機能を導入

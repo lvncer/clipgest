@@ -30,7 +30,7 @@
 | ------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------- |
 | ランタイム / FW                | Go + Gin                                       | REST API (`/api/links`, `/api/og`)                                    |
 | ホスティング                   | Render                                         |                                                                       |
-| DB クライアント                | pgx (postgres)                                 | Supabase/Postgres へ接続                                              |
+| DB クライアント                | ent (pgx driver)                               | Supabase/Postgres へ接続                                              |
 | 認証                           | clerk-sdk-go + JWT middleware                  | `Authorization: Bearer <JWT>` を検証し `user_id` をコンテキストに設定 |
 | OGP 取得                       | 独自サービス（`internal/service/metadata.go`） | `/api/og` で利用                                                      |
 | ORM                            | ent                                            | スキーマ定義とコード生成を一元化                                      |

@@ -36,15 +36,6 @@
 ### API サーバー（api, Go + Gin）
 
 - エンドポイントは[API エンドポイント一覧](/documents/API_endpoints.md)を参照
-- 構成イメージ：
-  - `internal/config` … 環境変数（`PORT`, `DATABASE_URL`, `CLERK_SECRET_KEY`, `ENVIRONMENT`, `ALLOWED_ORIGINS`）の読み込み。
-  - `internal/db` … Postgres / Supabase への接続（pgx pool / Ent client）。
-  - `internal/model` … `LinkCreateRequest` などのリクエスト / モデル定義。
-  - `internal/handler` … Gin のハンドラ群（`CreateLink`, `GetLinks`, `GetOGP` など）。
-  - `internal/service` … ビジネスロジック（`FetchMetadata` など、OGP 取得処理）。
-  - `internal/repository` … 永続化（Ent）と検索条件/ソートの実装。
-  - `internal/middleware` … Clerk JWT 認証（`Authorization: Bearer ...`）。
-  - `cmd/server/main.go` … HTTP サーバー起動、Graceful Shutdown。
 
 ### Web アプリ（web, Next.js）
 
@@ -70,39 +61,6 @@
 - ローカル
   基本的に同じ Supabase プロジェクトに対して開発用テーブル / データを使う想定（接続文字列は `.env` で管理）。
   必要に応じて、開発用 Supabase プロジェクトに切り替えられるようにしておく。
-- 主なテーブル（最小スキーマ）
-
-  ```mermaid
-  erDiagram
-    links {
-      id UUID PK
-      user_id TEXT "Clerk の user_id（JWT の sub）"
-      url TEXT
-      title TEXT "nullable（保存時に OGP から補完されることあり）"
-      description TEXT "予備"
-      domain TEXT
-      og_image TEXT
-      page_url TEXT
-      note TEXT
-      tags JSONB "[]string（GIN index あり）"
-      metadata JSONB "default {}"
-      saved_at TIMESTAMPTZ
-      created_at TIMESTAMPTZ
-    }
-  ```
-
-  ```mermaid
-  erDiagram
-    digests {
-      id UUID PK
-      user_id TEXT "Clerk の user_id（JWT の sub）/ 将来のユーザー ID"
-      period_start TIMESTAMPTZ
-      period_end TIMESTAMPTZ
-      content TEXT
-      public_slug TEXT
-      created_at TIMESTAMPTZ
-    }
-  ```
 
 ## コンポーネント図（クライアント ↔ 拡張 ↔ API ↔ DB）
 

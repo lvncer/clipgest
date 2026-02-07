@@ -34,14 +34,6 @@ func main() {
 	// Initialize Clerk SDK
 	middleware.InitClerk(cfg.ClerkSecretKey)
 
-	// Create database connection pool (pgx)
-	ctx := context.Background()
-	pool, err := db.NewPool(ctx, cfg.DatabaseURL)
-	if err != nil {
-		log.Fatalf("failed to create database pool: %v", err)
-	}
-	defer pool.Close()
-
 	// Create Ent client for ORM operations.
 	entClient, err := db.NewEntClient(cfg.DatabaseURL)
 	if err != nil {
