@@ -1,8 +1,6 @@
-# Quicklinks
+# Clipgest
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-
-![toppage-image](/public/images/toppage.jpeg)
 
 ## アプリについて
 
@@ -12,11 +10,11 @@
 
 1. 拡張機能を導入
 
-   [Chrome ウェブストア](https://chromewebstore.google.com/detail/quicklinks/jofhehfnmliefoipncjbimmomenmegmj?authuser=0&hl=ja&pli=1)から QuickLinks をインストールします。
+   [Chrome ウェブストア](https://chromewebstore.google.com/detail/quicklinks/jofhehfnmliefoipncjbimmomenmegmj?authuser=0&hl=ja&pli=1)からインストールします。
 
 2. Web で認証する
 
-   [こちら](https://quicklinks-zeta.vercel.app)からサインアップ/サインインして認証を完了します。
+   [こちら](https://clipgest.com/)からサインアップ/サインインして認証を完了します。
 
 3. 保存＆閲覧
 
@@ -31,7 +29,7 @@
 | アーキテクチャ       | [documents/architecture.md](documents/architecture.md)                 |
 | 技術スタック一覧     | [documents/tech-stacks.md](documents/tech-stacks.md)                   |
 | マイルストーン       | [documents/milestones.md](documents/milestones.md)                     |
-| ディレクトリ構造     | [/documents/directory_structure.md](/documents/directory_structure.md) |
+| ディレクトリ構造     | [documents/directory_structure.md](documents/directory_structure.md) |
 | API ドキュメント     | [documents/api.md](documents/api.md)                                   |
 | ER 図                | [documents/er-diagram.md](documents/er-diagram.md)                     |
 | CI/CD ドキュメント   | [documents/ci.md](documents/ci.md)                                     |
