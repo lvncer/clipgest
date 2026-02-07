@@ -38,7 +38,7 @@ export default function LinkCard({ link }: { link: LinkItem }) {
                 }}
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted-foreground/30 bg-muted/50 absolute inset-0">
+              <div className="w-full h-full flex items-center justify-center text-muted-foreground/30 bg-muted/50 absolute inset-0 rounded-lg">
                 <ImageIcon className="w-10 h-10" />
               </div>
             )}
