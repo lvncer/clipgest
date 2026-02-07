@@ -7,22 +7,22 @@
 
 ```sh
 /
-├── README.md
-├── package.json        # ルート共通ツール
-├── bun.lock            # ルート bun 用ロックファイル
-├── biome.json          # Biome 設定
-├── docker-compose.yml  # API + Web を同時起動する docker compose 設定
-├── .dockerignore       # Docker ビルド用の ignore 設定
-├── .gitignore
-├── .husky/
-│   └── pre-commit      # lint-staged を呼ぶフック
-├── public/images/
-├── documents/
-└── .github/
+ ├── README.md
+ ├── package.json        # ルート共通ツール
+ ├── bun.lock            # ルート bun 用ロックファイル
+ ├── biome.json          # Biome 設定
+ ├── docker-compose.yml  # API + Web を同時起動する docker compose 設定
+ ├── .dockerignore       # Docker ビルド用の ignore 設定
+ ├── .gitignore
+ ├── .husky/
+ │  └── pre-commit       # lint-staged を呼ぶフック
+ ├── public/images/
+ ├── documents/
+ └── .github/
     ├── dependabot.yml
     └── workflows/
-        ├── ci.yml
-        └── dependabot-automerge.yml  # Dependabot PR の自動マージ用ワークフロー
+      ├── ci.yml
+      └── dependabot-automerge.yml  # Dependabot PR の自動マージ用ワークフロー
 ...
 ```
 
@@ -57,6 +57,9 @@ api/
  ├── cmd/
  │  └── server/
  │     └── main.go               # エントリポイント
+ ├── ent/
+ │  └── schema/                  # スキーマ定義
+ │     └── link.go
  └── internal/
      ├── config/
      │   └── config.go           # 環境変数読み込み
