@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import WebHeader from "@/components/layouts/WebHeader";
+import Footer from "@/components/layouts/Footer";
 
 export const metadata: Metadata = {
   title: "clipgest",
@@ -195,39 +196,7 @@ export default function AboutPage() {
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 bg-muted/50 border-t border-border">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex flex-col gap-2 items-center md:items-start">
-            <span className="text-lg font-bold">clipgest</span>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} clipgest. All rights reserved.
-            </p>
-          </div>
-          <div className="flex gap-8 text-sm text-muted-foreground">
-            <Link
-              href="/privacy"
-              className="hover:text-foreground transition-colors"
-            >
-              プライバシーポリシー
-            </Link>
-            <Link
-              href="/sign-in"
-              className="hover:text-foreground transition-colors"
-            >
-              サインイン
-            </Link>
-            <a
-              href="https://github.com/lvncer/quicklinks"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-foreground transition-colors"
-            >
-              GitHub
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
