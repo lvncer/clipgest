@@ -1,9 +1,5 @@
 # アーキテクチャ概要
 
-## 目的
-
-気になった Web ページの URL を「ブラウザ拡張から一瞬で保存」して、あとから Web ダッシュボードで見返したり、将来的にはダイジェストにまとめられるようにする。
-
 ## 主要コンポーネント
 
 | コンポーネント | ディレクトリ | 技術                |
@@ -34,8 +30,6 @@
 - 拡張側で独自のサインイン UI は持たず、Web ログイン済みであることを前提にトークン同期のみ行う。
 
 ### API サーバー（api, Go + Gin）
-
-- エンドポイントは[API エンドポイント一覧](/documents/API_endpoints.md)を参照
 
 ### Web アプリ（web, Next.js）
 
@@ -74,7 +68,7 @@ flowchart LR
   Client <--> Ext
   Ext -->|POST /api/links| API
   Client -->|GET /api/links| API
-  Client -->|GET /digests/... (将来)| API
+  Client -->|GET /digests/...| API
   API -->|SQL| DB
   DB --> API
 ```
@@ -111,6 +105,7 @@ sequenceDiagram
 - 拡張の content script がリンク要素を特定し、`Save` ボタンを表示。
 - ユーザーが `Save` を押すと、拡張が `{ url, title, page, note?, tags? }` を含む JSON を `POST /api/links` に送信（`Authorization: Bearer <Clerk JWT>`）。
 - API サーバーが JWT を検証し、DB にレコードを挿入。
+- **保存時に OGP を取得できる場合は取得して DB に反映**（失敗時は空/既存値のまま）。
 - 挿入結果の `id` を JSON で返し、拡張が「Saved」トーストを表示。
 
 ```mermaid
@@ -123,18 +118,24 @@ participant DB as Supabase
 User->>Ext: リンクを長押し / 右クリックして Save 操作
 Ext->>API: POST /api/links (Authorization: Bearer <Clerk JWT>, url, title, page, note)
 API->>API: Clerk JWT 検証 & バリデーション
+alt OGP 取得が有効な場合
+  API->>API: 対象 URL の OGP を取得
+end
 API->>DB: INSERT INTO links (...)
 DB-->>API: 新しいリンク ID
 API-->>Ext: 200 OK { id }
 Ext-->>User: Saved トースト表示
 ```
 
-### 3. ダッシュボード閲覧フロー
+### 3. リンク取得（一覧）+ OGP 再取得（条件付き）フロー
 
 - ユーザーが Next.js Web アプリ（例：`http://localhost:3000`）にアクセス。
 - フロントエンドが初期ロード時に `GET {NEXT_PUBLIC_API_BASE}/api/links?limit=...` を叩き、最近のリンク一覧を取得。
-- 取得した配列を一覧表示し、リンククリックで元記事へジャンプ。
-- 将来的にはクエリパラメータで `from/to` などを指定して期間フィルタを行う。
+- リンク一覧の **表示時** に、各リンクカードが **条件付きで** OGP を再取得する。
+  - `link.url` と `NEXT_PUBLIC_API_BASE` があるときだけ `/api/og` を叩く。
+  - クライアント側で **60 秒は重複取得を抑制**（同じ URL への再リクエストをスキップ）。
+- 取得できた OGP は即座に UI に反映、失敗時は DB の `og_image` / `description` をフォールバックとして使う。
+- **将来方針**: リンク取得時の OGP 再取得は廃止し、**保存時のみ OGP 取得**・取得時は **DB の情報のみ**を返す構成へ移行してパフォーマンスを改善する。
 
 ```mermaid
 sequenceDiagram
@@ -149,6 +150,16 @@ API->>DB: SELECT * FROM links WHERE user_id = ...
 DB-->>API: リンク一覧
 API-->>Web: 200 OK (JSON)
 Web-->>User: リンク一覧をレンダリング
+
+alt link.url と API_BASE がある場合
+  Web->>API: GET /api/og?url=...
+  API->>API: 対象 URL の OGP を取得
+  API-->>Web: 200 OK (OGP JSON)
+  Web-->>User: OGP を反映して表示更新
+else 60 秒以内の再取得 or 条件未満
+  Web-->>User: DB の OGP を表示（フォールバック）
+end
+
 User->>Web: 任意のリンクをクリック
 Web-->>User: 別タブなどで元記事を表示
 ```
@@ -157,7 +168,6 @@ Web-->>User: 別タブなどで元記事を表示
 
 - **M5（手動）**: Web から手動で期間を指定してダイジェストを生成し、`digests` / `digest_items` に保存して一覧/公開ページで閲覧する。
   - AI 要約は手動トリガに含めてOK（失敗時はテンプレにフォールバック）
-- **最終版（M8想定）**: 必要なら cron / ジョブキューで週次・月次の自動生成を導入し、生成完了をメール等で通知する。
 
 ```mermaid
 sequenceDiagram
@@ -175,23 +185,3 @@ sequenceDiagram
   DB-->>API: 新しいダイジェスト ID / public_slug
   API-->>Web: 生成結果（slug など）
 ```
-
-## 開発・デプロイ構成
-
-- **ローカル開発**
-
-  - API / Web はローカルで起動し、DB は Supabase（クラウド）に直接接続する。
-    - `api`: Go/Gin サーバー（`DATABASE_URL` に Supabase の接続文字列を指定し、Clerk 関連の設定値を `.env` から読み込む）。
-    - `web`: Next.js アプリ（`NEXT_PUBLIC_API_BASE` でローカル API の URL を参照）。
-  - スキーマ変更は Supabase 側に対して実行する。誤って本番データを壊さないように、破壊的な変更は専用ブランチ or 開発用プロジェクトで試してから本番に反映する。
-
-  - **本番構成（イメージ）**
-  - DB: Supabase（Postgres）。
-  - API サーバー: コンテナ（Render）
-  - Web アプリ: Vercel に Next.js をデプロイ。
-  - 拡張: Chrome Web Store などで配布（Clerk ログイン必須のクローズド運用）。
-
-## 今後の拡張の方向性（メモ）
-
-- （最終版 / M8想定）OG 取得や本文スクレイピングをバックグラウンドジョブ化して、`links.metadata` を徐々にリッチにする。
-- （最終版 / M8想定）`digests` を定期生成するジョブと、ダイジェスト閲覧ページ（共有 URL）を Next.js で実装する。
