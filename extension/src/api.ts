@@ -7,6 +7,8 @@ export interface SaveLinkRequest {
   page: string;
   note?: string;
   tags?: string[];
+  description?: string;
+  ogImage?: string;
 }
 
 export interface SaveLinkResponse {
@@ -42,13 +44,18 @@ export async function saveLink(
 
   const headers = await getAuthHeaders();
   const url = `${config.apiBaseUrl}/api/links`;
+  const { ogImage, ...rest } = request;
+  const payload = {
+    ...rest,
+    og_image: ogImage,
+  };
 
   let response: Response;
   try {
     response = await fetch(url, {
       method: "POST",
       headers,
-      body: JSON.stringify(request),
+      body: JSON.stringify(payload),
     });
   } catch (err) {
     throw new Error("Network error while calling API");

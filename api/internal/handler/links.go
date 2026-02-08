@@ -14,7 +14,6 @@ import (
 	"github.com/lvncer/quicklinks/api/internal/middleware"
 	"github.com/lvncer/quicklinks/api/internal/model"
 	"github.com/lvncer/quicklinks/api/internal/repository"
-	"github.com/lvncer/quicklinks/api/internal/service"
 )
 
 type LinksHandler struct {
@@ -31,7 +30,6 @@ func (h *LinksHandler) Register(r *gin.Engine, authMiddleware gin.HandlerFunc) {
 	{
 		api.POST("/links", h.CreateLink)
 		api.GET("/links", h.GetLinks)
-		api.GET("/og", h.GetOGP)
 	}
 }
 
@@ -57,10 +55,6 @@ func (h *LinksHandler) CreateLink(c *gin.Context) {
 	domain := parsed.Host
 	domain = strings.TrimPrefix(domain, "www.")
 
-	// Fetch OGP metadata
-	// Note: In production, this should probably be done asynchronously
-	// or in a background job to avoid slowing down the save request.
-	// For MVP, we do it synchronously but with a short timeout inside the service.
 	description := strings.TrimSpace(req.Description)
 	ogImage := strings.TrimSpace(req.OGImage)
 
@@ -74,27 +68,6 @@ func (h *LinksHandler) CreateLink(c *gin.Context) {
 		u, err := url.Parse(ogImage)
 		if err != nil || u == nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" {
 			ogImage = ""
-		}
-	}
-
-	// If client provided OGP fields are missing, fetch metadata server-side.
-	if description == "" || ogImage == "" {
-		meta, err := service.FetchMetadata(req.URL)
-		if err == nil {
-			if description == "" {
-				description = meta.Description
-			}
-			if ogImage == "" {
-				ogImage = meta.Image
-			}
-			// If title was not provided or is just the URL, use OGP title
-			if req.Title == "" || req.Title == req.URL {
-				if meta.Title != "" {
-					req.Title = meta.Title
-				}
-			}
-		} else {
-			log.Printf("failed to fetch metadata for %s: %v", req.URL, err)
 		}
 	}
 
@@ -233,42 +206,4 @@ func (h *LinksHandler) GetLinks(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"links": links})
-}
-
-func (h *LinksHandler) GetOGP(c *gin.Context) {
-	// Authentication is already handled by middleware
-	// No need to check user_id for OGP fetching
-
-	targetURL := c.Query("url")
-	if targetURL == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "url is required"})
-		return
-	}
-
-	// Validate URL
-	parsed, err := url.Parse(targetURL)
-	if err != nil || parsed.Host == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid url"})
-		return
-	}
-
-	// Fetch OGP
-	meta, err := service.FetchMetadata(targetURL)
-	if err != nil {
-		log.Printf("failed to fetch metadata: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch metadata"})
-		return
-	}
-
-	// Helpful for debugging in devtools when some sites return empty OGP due to bot protections.
-	if meta != nil && meta.Source != "" {
-		c.Header("X-QuickLinks-OGP-Source", meta.Source)
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"title":       meta.Title,
-		"description": meta.Description,
-		"image":       meta.Image,
-		"blocked":     meta.Blocked,
-	})
 }

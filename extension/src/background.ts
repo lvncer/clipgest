@@ -2,6 +2,12 @@ import { saveLink } from "./api";
 import { getConfig, saveConfig } from "./storage";
 import { isAuthenticated, getAuthState, parseJwt } from "./auth";
 
+type OGPData = {
+  title: string;
+  description: string;
+  image: string;
+};
+
 const CONTEXT_MENU_ID = "quicklinks-save-link";
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -37,11 +43,14 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 
     const linkText = info.selectionText || new URL(linkUrl).hostname;
     const pageUrl = tab?.url || info.pageUrl || "";
+    const ogp = await getOGPFromTab(tab?.id);
 
     await saveLink({
       url: linkUrl,
       title: linkText,
       page: pageUrl,
+      description: ogp?.description || "",
+      ogImage: ogp?.image || "",
     });
 
     if (tab?.id) {
@@ -108,11 +117,14 @@ async function handleSaveLinkMessage(
       };
     }
 
+    const ogp = await getOGPFromTab(_sender.tab?.id);
     const result = await saveLink({
       url: message.url,
       title: message.title,
       page: message.page,
       note: message.note,
+      description: ogp?.description || "",
+      ogImage: ogp?.image || "",
     });
 
     return { success: true, id: result.id };
@@ -122,6 +134,32 @@ async function handleSaveLinkMessage(
       error: error instanceof Error ? error.message : "Unknown error",
     };
   }
+}
+
+async function getOGPFromTab(
+  tabId?: number,
+): Promise<OGPData | null> {
+  if (!tabId) {
+    return null;
+  }
+
+  return new Promise((resolve) => {
+    chrome.tabs.sendMessage(
+      tabId,
+      { type: "CLIPGEST_GET_OGP" },
+      (response) => {
+        if (chrome.runtime.lastError) {
+          resolve(null);
+          return;
+        }
+        if (!response || response.success !== true) {
+          resolve(null);
+          return;
+        }
+        resolve(response.ogp || null);
+      },
+    );
+  });
 }
 
 async function handleSaveAuthMessage(message: {
